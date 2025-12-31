@@ -1,12 +1,15 @@
 import { z } from "zod";
 import { emailSchema, passwordSchema } from "../_helper.schema";
 
+export const usernameValidation = z
+  .string()
+  .trim()
+  .min(3, "Username must be at least 3 characters")
+  .max(20, "Username too long")
+  .regex(/^[a-zA-Z0-9_.-]+$/, "Username can only contain letters, numbers, underscores, dots, and hyphens");
+
 export const signupSchema = z.object({
-  username: z
-    .string()
-    .trim()
-    .min(3, "Username must be at least 3 characters")
-    .max(20, "Username too long"),
+  username: usernameValidation,
 
   email: emailSchema,
 

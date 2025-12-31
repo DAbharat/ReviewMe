@@ -1,4 +1,5 @@
-import { NextResponse, NextRequest } from 'next/server'
+import { NextResponse } from 'next/server'
+import type { NextRequest } from 'next/server'
 import { getToken } from 'next-auth/jwt'
  
 // This function can be marked `async` if using `await` inside
@@ -9,13 +10,20 @@ export async function proxy(request: NextRequest) {
 
 
     if(token && (
-        url.pathname === '/sign-in' ||
-        url.pathname === '/sign-up' ||
-        url.pathname === '/'
+        url.pathname === "/sign-in" ||
+        url.pathname === "/sign-up"
     )) {
         return NextResponse.redirect(new URL('/posts', request.url))
     }
-  return NextResponse.redirect(new URL('/home', request.url))
+    if(!token &&
+      (
+        url.pathname !== "/sign-in" &&
+        url.pathname !== "/sign-up"
+      )
+    ) {
+      return NextResponse.redirect(new URL('/sign-in', request.url))
+    }
+  return NextResponse.next();
 }
  
 // See "Matching Paths" below to learn more

@@ -1,25 +1,33 @@
-import mongoose, { Connection } from "mongoose";
+import mongoose from "mongoose"
 
-type ConnectionObject = {
-    isConnected?: number
+type MongooseCache = {
+  conn: typeof mongoose | null
+  promise: Promise<typeof mongoose> | null
 }
 
-const connection: ConnectionObject = {}
+let cached = (global as any).mongoose as MongooseCache
 
-async function dbConnect(): Promise<void> {
-    if (connection.isConnected) {
-        console.log("Already connected to Database.")
-        return;
-    }
-
-    try {
-        const db = await mongoose.connect(process.env.MONGODB_URI || "")
-        connection.isConnected = db.connections[0].readyState
-        console.log("DB connected successfully!")
-    } catch (error) {
-        console.log("DB connection failed", error)
-        process.exit(1)
-    }
+if (!cached) {
+  cached = (global as any).mongoose = {
+    conn: null,
+    promise: null,
+  }
 }
 
-export default dbConnect;
+async function dbConnect() {
+  if (cached.conn) {
+    console.log("Already connected to Database.")
+    return cached.conn
+  }
+
+  if (!cached.promise) {
+    cached.promise = mongoose.connect(process.env.MONGODB_URI!)
+  }
+
+  cached.conn = await cached.promise
+  console.log("DB connected successfully!")
+
+  return cached.conn
+}
+
+export default dbConnect
