@@ -1,6 +1,6 @@
 import mongoose, { Document, Schema, Model, Types } from 'mongoose';
 
-export type PollOptionLabel = "Worth it" | "Not worth it" | "Maybe";
+export type PollOptionLabel = "Worth it" | "Not Worth it" | "Maybe";
 
 export interface PollOption {
   label: PollOptionLabel;
@@ -11,6 +11,7 @@ export interface Post extends Document {
     title : string,
     description : string,
     imageUrl : string,
+    imagePublicId: string,
     category : string,
     poll : PollOption[],
     commentCount: number,
@@ -28,7 +29,7 @@ const PollOptionSchema: Schema<PollOption> = new Schema({
     },
     votes: {
         type: Number,
-        required: true
+        default: 0
     }
 })
 
@@ -44,10 +45,14 @@ const PostSchema: Schema<Post> = new Schema({
         type: String,
         required: true,
     },
+    imagePublicId: {
+        type: String,
+        required: true
+    },
     category: {
         type: String,
         enum: [
-            "Product", "Series", "Movie", "App", "Game", "Sport","Technology","Other"
+            "Product", "Series", "Movie", "App", "Game", "Sport","Technology","Celebrity","Other"
         ],
         default: "Other",
         index: true
@@ -60,7 +65,7 @@ const PostSchema: Schema<Post> = new Schema({
                 label: "Worth it", votes: 0
             },
             {
-                label: "Not worth it", votes: 0
+                label: "Not Worth it", votes: 0
             },
             {
                 label: "Maybe", votes: 0

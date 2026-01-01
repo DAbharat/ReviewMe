@@ -15,7 +15,8 @@ export const postSchema = z.object({
     .optional(),
 
   imageUrl: urlSchema,
-  category: z.enum(["product", "series", "movie", "app", "other"]),
+  imagePublicId: z.string().trim().min(1, "Image Public ID is required"),
+  category: z.enum(["Product", "Series", "Movie", "App", "Game", "Sport","Technology","Celebrity","Other"]),
 });
 
 export type PostInput = z.infer<typeof postSchema>;
