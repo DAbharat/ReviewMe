@@ -1,6 +1,6 @@
 import mongoose, { Document, Schema, Model, Types } from 'mongoose';
 
-export type VoteOption = "Worth it" | "Not worth it" | "Maybe";
+export type VoteOption = "Worth it" | "Not Worth it" | "Maybe";
 
 export interface Vote extends Document {
     postId: Types.ObjectId,
@@ -19,19 +19,27 @@ const VoteSchema: Schema<Vote> = new Schema({
     userId: {
         type: Schema.Types.ObjectId,
         ref: "User",
-        required: true
+        required: true,
+        index: true
     },
     option: {
         type: String,
         enum: [
-            "Worth it", "Not worth it", "Maybe"
+            "Worth it", "Not Worth it", "Maybe"
         ],
-        required: true
+        required: true,
     },
     createdAt: {
         type: Date,
         default: Date.now
     }
+})
+
+VoteSchema.index({
+    postId: 1,
+    userId: 1
+}, {
+    unique: true
 })
 
 const VoteModel = (mongoose.models.Vote as mongoose.Model<Vote>) || mongoose.model<Vote>("Vote", VoteSchema)
