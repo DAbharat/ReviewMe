@@ -13,10 +13,10 @@ import { ApiResponse } from "../../types/ApiResponse"
 import { Field, FieldError, FieldGroup, FieldLabel, FieldContent } from "../ui/field"
 import { Input } from "../ui/input"
 import { Spinner } from "../ui/spinner"
+import { Button } from "../ui/button"
 
 
-
-export default function SignUpForm(){
+export default function SignUpForm() {
 
     const router = useRouter()
 
@@ -35,7 +35,7 @@ export default function SignUpForm(){
 
 
     const username = form.watch("username")
-const [debouncedUsername] = useDebounceValue(username ?? "", 500)
+    const [debouncedUsername] = useDebounceValue(username ?? "", 500)
 
 
     useEffect(() => {
@@ -84,84 +84,84 @@ const [debouncedUsername] = useDebounceValue(username ?? "", 500)
                 <p className="text-center text-sm text-[#6b8b84] mb-6">Choose a username and enter your email and password.</p>
                 <form onSubmit={form.handleSubmit(onSubmit)}>
                     <FieldGroup>
-                    <Controller
-                        control={form.control}
-                        name="username"
-                        render={({ field, fieldState }) => (
-                            <Field data-invalid={fieldState.invalid}>
-                                <FieldLabel htmlFor={field.name} className="sr-only">Username</FieldLabel>
-                                <FieldContent>
-                                    <Input
-                                        id={field.name}
-                                        {...field}
-                                        aria-invalid={fieldState.invalid}
-                                        placeholder="Name" />
-                                    {isUsernameValid && <Spinner />}
 
-  {/* result message */}
-  {!isUsernameValid && usernameMessage && (
-    <div className="ml-1 text-sm text-[#5b7f7a]">
-      {usernameMessage}
-    </div>
-  )}
-                                    {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
-                                </FieldContent>
-                            </Field>
-                        )}
-                    />
+                        <Controller
+                            control={form.control}
+                            name="username"
+                            render={({ field, fieldState }) => (
+                                <Field data-invalid={fieldState.invalid}>
+                                    <FieldLabel htmlFor={field.name} className="sr-only">Username</FieldLabel>
+                                    <FieldContent>
+                                        <Input
+                                            id={field.name}
+                                            {...field}
+                                            aria-invalid={fieldState.invalid}
+                                            placeholder="Name" />
+                                        {isUsernameValid && <Spinner />}
+                                        <p className={`text-sm ml-1.5 ${usernameMessage === "Username is available" ? "text-green-600" : "text-red-600"}`}>{usernameMessage}</p>
+                                        {/* {!isUsernameValid && usernameMessage && (
+                                            <div className="ml-1 text-sm text-[#7b0b0b]">
+                                                {usernameMessage}
+                                            </div>
+                                        )} */}
+                                        {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+                                    </FieldContent>
+                                </Field>
+                            )}
+                        />
 
-                    <Controller
-                        control={form.control}
-                        name="email"
-                        render={({ field, fieldState }) => (
-                            <Field data-invalid={fieldState.invalid}>
-                                <FieldLabel htmlFor={field.name} className="sr-only">Email</FieldLabel>
-                                <FieldContent>
-                                    <Input
-                                        id={field.name}
-                                        type="email"
-                                        {...field}
-                                        aria-invalid={fieldState.invalid}
-                                        placeholder="Email"
-                                        className="border border-[#cfe8e1] focus:border-[#2f6b61] rounded-md px-4 py-3 placeholder:text-[#9bbdb6]"
-                                    />
-                                    {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
-                                </FieldContent>
-                            </Field>
-                        )}
-                    />
+                        <Controller
+                            control={form.control}
+                            name="email"
+                            render={({ field, fieldState }) => (
+                                <Field data-invalid={fieldState.invalid}>
+                                    <FieldLabel htmlFor={field.name} className="sr-only">Email</FieldLabel>
+                                    <FieldContent>
+                                        <Input
+                                            id={field.name}
+                                            type="email"
+                                            {...field}
+                                            aria-invalid={fieldState.invalid}
+                                            placeholder="Email"
+                                            className="border border-[#cfe8e1] focus:border-[#2f6b61] rounded-md px-4 py-3 placeholder:text-[#9bbdb6]"
+                                        />
+                                        {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+                                    </FieldContent>
+                                </Field>
+                            )}
+                        />
 
-                    <Controller
-                        control={form.control}
-                        name="password"
-                        render={({ field, fieldState }) => (
-                            <Field data-invalid={fieldState.invalid}>
-                                <FieldLabel htmlFor={field.name} className="sr-only">Password</FieldLabel>
-                                <FieldContent>
-                                    <Input
-                                        id={field.name}
-                                        type="password"
-                                        {...field}
-                                        aria-invalid={fieldState.invalid}
-                                        placeholder="Password"
-                                        className="border border-[#cfe8e1] focus:border-[#2f6b61] rounded-md px-4 py-3 placeholder:text-[#9bbdb6]"
-                                    />
-                                    {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
-                                </FieldContent>
-                            </Field>
-                        )}
-                    />
+                        <Controller
+                            control={form.control}
+                            name="password"
+                            render={({ field, fieldState }) => (
+                                <Field data-invalid={fieldState.invalid}>
+                                    <FieldLabel htmlFor={field.name} className="sr-only">Password</FieldLabel>
+                                    <FieldContent>
+                                        <Input
+                                            id={field.name}
+                                            type="password"
+                                            {...field}
+                                            aria-invalid={fieldState.invalid}
+                                            placeholder="Password"
+                                            className="border border-[#cfe8e1] focus:border-[#2f6b61] rounded-md px-4 py-3 placeholder:text-[#9bbdb6]"
+                                        />
+                                        {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+                                    </FieldContent>
+                                </Field>
+                            )}
+                        />
                     </FieldGroup>
 
                     <div className="mt-4">
                         <p className="text-sm text-[#6b8b84] mb-3">Password must be at least 8 characters and contain uppercase, lowercase, and numbers</p>
-                        <button
-                            type="submit"
+                        <Button
+                            aria-label="submit"
                             disabled={isSubmitting || isUsernameValid}
-                            className="w-full rounded-md bg-[#44786f] hover:bg-[#315951] text-white font-semibold py-3 border-2 disabled:opacity-60"
+                            className="w-md rounded-md bg-[#44786f] hover:bg-[#315951] text-white font-semibold py-3 border-2 disabled:opacity-60"
                         >
                             {isSubmitting ? "Signing Up..." : "Sign Up"}
-                        </button>
+                        </Button>
                     </div>
 
                     <div className="mt-6 text-center text-sm">
