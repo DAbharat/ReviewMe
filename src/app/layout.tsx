@@ -3,7 +3,10 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import AuthProvider from "@/context/AuthProvider";
 import { Toaster } from "../components/ui/sonner";
-
+import Navbar from "@/components/layout/Navbar";
+import { SidebarProvider, SidebarTrigger, SidebarInset } from "@/components/ui/sidebar";
+import { AppSidebar } from "@/components/app-siderbar";
+//import { AppSiderbar } from "@/components/app-sidebar";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -27,14 +30,25 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <AuthProvider>
-        <body
+
+      <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        style={{ ["--navbar-height"]: "3rem" } as React.CSSProperties}
       >
-        {children}
-        <Toaster />
+        <AuthProvider>
+          <Navbar />
+          <SidebarProvider defaultOpen={false}>
+            <AppSidebar />
+                <div className="p-2">
+    <SidebarTrigger />
+  </div>
+              <SidebarInset className="pt-[var(--navbar-height)] flex-1 overflow-auto">
+                {children}
+              </SidebarInset>
+            <Toaster />
+          </SidebarProvider>
+        </AuthProvider>
       </body>
-      </AuthProvider>
     </html>
   );
 }

@@ -1,0 +1,29 @@
+[
+    {
+        "createdBy": {
+            "username": "X_AE_A-13"
+        },
+        "title": "Habitant morbi tristique senectus et netus et.",
+        "description": "Exploring the depths of space and technology.",
+        "imageUrl": "/images/sample-1.jpg",
+        "commentCount": 25
+    },
+    {
+        "createdBy": {
+            "username": "design_gal"
+        },
+        "title": "Suspendisse sed nisi lacus sed viverra.",
+        "description": "A deep dive into modern design principles.",
+        "imageUrl": "/images/sample-2.jpg",
+        "commentCount": 12
+    },
+    {
+        "createdBy": {
+            "username": "photoguy"
+        },
+        "title": "Curabitur non nulla sit amet nisl tempus convallis.",
+        "description": "Capturing moments one click at a time.",
+        "imageUrl": "/images/sample-3.jpg",
+        "commentCount": 8
+    }
+]

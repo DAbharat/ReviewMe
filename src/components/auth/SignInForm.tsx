@@ -1,23 +1,17 @@
 "use client"
-import { useEffect, useState } from "react"
+import { useState } from "react"
 import { useRouter } from "next/navigation"
-import { useForm, Resolver, Controller } from "react-hook-form"
+import { useForm, Controller } from "react-hook-form"
 import Link from "next/link"
-import { useDebounceValue } from "usehooks-ts"
 import { toast } from "sonner"
-import { signupSchema } from "../../schemas/auth/signUp.schema"
 import { zodResolver } from "@hookform/resolvers/zod"
 import z from "zod"
-import axios, { AxiosError } from "axios"
-import { ApiResponse } from "../../types/ApiResponse"
 import { Field, FieldError, FieldGroup, FieldLabel, FieldContent } from "../ui/field"
 import { Input } from "../ui/input"
-import { Spinner } from "../ui/spinner"
 import { Button } from "../ui/button"
 import { signinSchema } from "@/schemas/auth/signIn.schema"
 import { signIn } from "next-auth/react"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "../ui/dropdown-menu"
-
 
 
 
@@ -59,12 +53,12 @@ export default function SignInForm() {
     }
 
     return (
-        <div className="min-h-screen flex flex-col items-center justify-start bg-[#BBC7A4] py-16">
+        <div className="min-h-screen flex flex-col items-center justify-start bg-[#BBC7A4] py-8">
             <header className="text-center mb-8">
                 <h1 className="text-4xl md:text-5xl font-extrabold text-[#0f2430]">Welcome to ReviewMe</h1>
                 <p className="mt-4 text-md text-[#415a57]">To continue, fill out your personal info</p>
             </header>
-            <div className="w-full max-w-lg bg-[#F2F5EA] border-2 border-black rounded-2xl shadow-md p-8">
+            <div className="w-full max-w-lg bg-[#F2F5EA] border-2 border-black rounded-2xl shadow-md p-6">
                 <h2 className="text-3xl font-bold text-[#0f2430] mb-4 text-center">Sign in to your account</h2>
                 <p className="text-center text-sm text-[#6b8b84] mb-6">Enter your credentials or sign in via Google</p>
                 <form onSubmit={form.handleSubmit(onSubmit)}>
