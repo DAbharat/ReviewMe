@@ -37,7 +37,7 @@ export default function RootLayout({
       >
         <AuthProvider>
           <Navbar />
-          <SidebarProvider defaultOpen={false}>
+          <SidebarProvider defaultOpen={true}>
             <AppSidebar />
                 <div className="p-2">
     <SidebarTrigger />
