@@ -1,18 +1,9 @@
-"use client"
-import React, { useState } from 'react'
-import { toast } from 'sonner'
+import ProfileClient from '@/components/profile/ProfileClient'
 
+export default async function page({ params }: { params: any }) {
+  const resolved = await params
+  const username = resolved?.username ?? 'username'
 
-
-
-
-export default function page() {
-    const[isLoading, setIsLoading] = useState(false)
-
-  return (
-    <div>
-      
-    </div>
-  )
+  return <ProfileClient username={username} />
 }
 

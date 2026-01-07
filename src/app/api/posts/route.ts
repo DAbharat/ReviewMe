@@ -50,7 +50,7 @@ export async function POST(request: Request) {
             title: title.trim(),
             description: description?.trim(),
             imageUrl,
-            imagePublicId,
+            imagePublicId: imagePublicId?.trim(),
             category,
             createdBy: new mongoose.Types.ObjectId(user._id)
         })

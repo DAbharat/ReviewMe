@@ -30,14 +30,20 @@ export default function Navbar() {
                                 <span className="text-sm text-[#0f2430] font-medium hidden sm:block">
                                     Welcome, {user?.username ?? user?.name ?? "User"}
                                 </span>
-                                <Button
-                                    variant="outline"
-                                    size="sm"
-                                    className="border-2 border-black bg-white text-[#0f2430] hover:bg-[#0f2430] hover:text-white transition-colors h-9 w-9 p-0"
-                                    onClick={() => router.push(`/api/profile/${user?.id}`)}
-                                >
-                                    <User className="h-4 w-4" />
-                                </Button>
+                                {(() => {
+                                    const profileSlug = user?.username ?? (user as any)?._id ?? null
+                                    return (
+                                        <Button
+                                            variant="outline"
+                                            size="sm"
+                                            className="border-2 border-black bg-white text-[#0f2430] hover:bg-[#0f2430] hover:text-white transition-colors h-9 w-9 p-0"
+                                            onClick={() => profileSlug && router.push(`/profile/${profileSlug}`)}
+                                            aria-label="Open profile"
+                                        >
+                                            <User className="h-4 w-4" />
+                                        </Button>
+                                    )
+                                })()}
                                 <Button
                                     variant="outline"
                                     size="sm"

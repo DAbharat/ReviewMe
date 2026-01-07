@@ -1,6 +1,6 @@
 import { getServerSession } from "next-auth";
 import { authOptions } from "../auth/[...nextauth]/options"
-import cloudinary from "@/lib/cloudinary";
+import { uploadBuffer } from "@/lib/cloudinary";
 import { User } from "next-auth";
 
 
@@ -23,6 +23,15 @@ export async function POST(request: Request) {
     }
 
     try {
+        // quick server-side validation of Cloudinary envs to provide clearer errors
+        const cloudName = process.env.CLOUDINARY_CLOUD_NAME || process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME
+        const apiKey = process.env.CLOUDINARY_API_KEY
+        const apiSecret = process.env.CLOUDINARY_API_SECRET
+
+        if (!cloudName || !apiKey || !apiSecret) {
+            console.error('Cloudinary not configured:', { cloudName, apiKey: !!apiKey, apiSecret: !!apiSecret })
+            return Response.json({ success: false, message: 'Image service not configured on server' }, { status: 500 })
+        }
         const formData = await request.formData()
         const file = formData.get("file") as File | null;
 
@@ -50,20 +59,7 @@ export async function POST(request: Request) {
         const bytes = await file.arrayBuffer()
         const buffer = Buffer.from(bytes)
 
-        const result = await new Promise<CloudinaryUploadResponse>(
-            (resolve, reject) => {
-                const uploadStream = cloudinary.uploader.upload_stream(
-                    {
-                        folder: "prodfeed_images",
-                    },
-                    (error, result) => {
-                        if (error) reject(error);
-                        else resolve(result as CloudinaryUploadResponse);
-                    }
-                )
-                uploadStream.end(buffer)
-            }
-        )
+        const result = await uploadBuffer(buffer, 'prodfeed_images')
         return Response.json({
             success: true,
             message: "Image uploaded successfully",

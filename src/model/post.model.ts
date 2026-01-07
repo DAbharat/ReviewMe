@@ -47,7 +47,6 @@ const PostSchema: Schema<Post> = new Schema({
     },
     imagePublicId: {
         type: String,
-        required: true
     },
     category: {
         type: String,

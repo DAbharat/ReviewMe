@@ -4,7 +4,7 @@ import dbConnect from "@/lib/dbconnect";
 import PostModel from "@/model/post.model";
 import { User } from "next-auth";
 import mongoose from "mongoose";
-import cloudinary from "@/lib/cloudinary";
+import { destroyImage } from "@/lib/cloudinary";
 
 
 export async function GET(request: Request) {
@@ -99,13 +99,13 @@ export async function DELETE(request: Request) {
             })
         }
 
-        if (post.imagePublicId) {
-      try {
-        await cloudinary.uploader.destroy(post.imagePublicId);
-      } catch (cloudErr) {
-        console.warn("Cloudinary destroy warning:", cloudErr);
-      }
-    }
+                if (post.imagePublicId) {
+                    try {
+                        await destroyImage(post.imagePublicId)
+                    } catch (cloudErr) {
+                        console.warn("Cloudinary destroy warning:", cloudErr);
+                    }
+                }
 
         await PostModel.findByIdAndDelete(postId)
 
@@ -190,14 +190,8 @@ export async function PUT(request: Request) {
 
         if (imageUrl && imagePublicId) {
             if (post.imagePublicId) {
-                await cloudinary.uploader.destroy(post.imagePublicId)
-            }
-        }
-
-        if (imageUrl && imagePublicId) {
-            if (post.imagePublicId) {
                 try {
-                    await cloudinary.uploader.destroy(post.imagePublicId);
+                    await destroyImage(post.imagePublicId)
                 } catch (cloudErr) {
                     console.warn("Cloudinary destroy warning:", cloudErr);
                 }

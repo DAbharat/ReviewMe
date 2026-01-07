@@ -23,7 +23,7 @@ export async function proxy(request: NextRequest) {
         url.pathname === "/sign-in" ||
         url.pathname === "/sign-up"
     )) {
-        return NextResponse.redirect(new URL('/posts', request.url))
+        return NextResponse.redirect(new URL('/feed', request.url))
     }
     if(!token &&
       (

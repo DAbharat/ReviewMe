@@ -43,6 +43,7 @@ export default function Page() {
     const [file, setFile] = useState<File | null>(null)
 
     const [isLoading, setIsLoading] = useState(false)
+      const [isUploading, setIsUploading] = useState(false)
     const { data: session } = useSession()
     const router = useRouter()
 
@@ -63,15 +64,24 @@ export default function Page() {
         }
 
         try {
-            setIsLoading(true)
+          setIsLoading(true)
 
-            const payload: Payload = {
-                title,
-                description: description || undefined,
-                imageUrl,
-                imagePublicId,
-                category: postType || category || undefined,
-            }
+          // ensure we have a real http(s) image URL - postSchema requires a valid URL
+          if (!imageUrl || !(imageUrl.startsWith('http://') || imageUrl.startsWith('https://'))) {
+            toast.error('Please upload a valid image before creating the post.')
+            setIsLoading(false)
+            return
+          }
+
+          const finalCategory = (postType || category) || 'Other'
+
+          const payload: Payload = {
+            title,
+            description: description || undefined,
+            imageUrl: imageUrl,
+            imagePublicId: imagePublicId || "",
+            category: finalCategory,
+          }
 
             await axios.post<ApiResponse>(`/api/posts`, payload)
             toast.success("Post created successfully.")
@@ -88,14 +98,51 @@ export default function Page() {
       const f = e.target.files?.[0]
       if (f) {
         setFile(f)
+        // show a temporary preview while uploading
         setImageUrl(URL.createObjectURL(f))
+        // upload immediately
+        uploadImage(f)
+      }
+    }
+
+    const uploadImage = async (file: File) => {
+      try {
+        setIsUploading(true)
+        const formData = new FormData()
+        formData.append('file', file)
+
+
+        const res = await axios.post<ApiResponse<{ imageUrl: string; publicId: string }>>('/api/image-upload', formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        })
+        const data = res.data
+
+        if (res.status !== 200 || !data?.success) {
+          throw new Error(data?.message || 'Image upload failed')
+        }
+
+        // API returns { data: { imageUrl, publicId } }
+        setImageUrl(data.data?.imageUrl || '')
+        setImagePublicId(data.data?.publicId || '')
+        toast.success('Image uploaded')
+      } catch (err) {
+        console.error('Upload error', err)
+        toast.error((err as Error).message || 'Image upload failed')
+        // clear preview if upload failed
+        setImageUrl('')
+        setImagePublicId('')
+        setFile(null)
+      } finally {
+        setIsUploading(false)
       }
     }
 
 
 
     return (
-      <div className="min-h-screen w-full bg-gray-50 flex items-start justify-center py-12 px-6">
+      <div className="min-h-screen w-full bg-white flex items-start py-12 px-2 justify-center">
         <div className="w-full max-w-4xl">
           <div className="bg-white border rounded-lg p-8 shadow-sm">
             <h2 className="text-2xl font-semibold mb-4">Create Post</h2>
@@ -205,7 +252,9 @@ export default function Page() {
               </div>
 
               <div className="flex justify-center">
-                <Button onClick={createPost} size="lg">Create Post</Button>
+                <Button onClick={createPost} size="lg" disabled={isLoading || isUploading}>
+                  {isUploading ? 'Uploading image...' : isLoading ? 'Creating...' : 'Create Post'}
+                </Button>
               </div>
             </div>
           </div>
