@@ -34,6 +34,7 @@ export default function SignInForm() {
     const onSubmit = async (data: z.infer<typeof signinSchema>) => {
         const result = await signIn("credentials", {
             redirect: false,
+            username: data.username,
             email: data.email,
             password: data.password
         })
@@ -48,7 +49,7 @@ export default function SignInForm() {
         }
 
         if (result?.ok) {
-            router.push("/profile")
+            router.push(`/profile/${data.username}`)
         }
     }
 

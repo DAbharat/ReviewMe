@@ -24,6 +24,8 @@ import { signOut, useSession } from "next-auth/react"
 import { toast } from "sonner"
 import { Button } from "./ui/button"
 import axios from "axios"
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "./ui/alert-dialog"
+import { useState } from "react"
 
 
 
@@ -41,9 +43,20 @@ const helpActions = [
 
 export function AppSidebar() {
 
+  const [open, setOpen] = useState(false)
+
   const { data: session } = useSession()
 
-  const handleSignout = async () => {
+  const handleSignoutClick = () => {
+    if (!session) {
+      toast.error("You are not signed in.")
+      return
+    }
+    setOpen(true)
+  }
+
+
+  const confirmSignout = async () => {
     if (!session) {
       toast.error("You are not signed in.")
       return
@@ -138,17 +151,35 @@ export function AppSidebar() {
                   <DropdownMenuSeparator />
 
                   <DropdownMenuItem
-                    onClick={handleSignout}
-                    className="w-full px-3 py-2 text-sm text-red-600 cursor-pointer focus:text-red-600"
+                    onClick={handleSignoutClick}
+                    className="w-full px-3 py-2 text-sm text-red-600 cursor-pointer"
                   >
                     Sign out
                   </DropdownMenuItem>
+
 
                 </DropdownMenuContent>
               </DropdownMenu>
             </SidebarMenuItem>
           </SidebarMenu>
         </SidebarFooter>
+        <AlertDialog open={open} onOpenChange={setOpen}>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Are you sure you want to sign out?</AlertDialogTitle>
+              <AlertDialogDescription>
+                You can sign back in anytime.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>Cancel</AlertDialogCancel>
+              <AlertDialogAction onClick={confirmSignout}>
+                Continue
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
+
 
       </SidebarContent>
     </Sidebar>

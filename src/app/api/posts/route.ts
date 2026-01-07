@@ -29,11 +29,11 @@ export async function POST(request: Request) {
     if (!parsed.success) {
         const tree = z.treeifyError(parsed.error)
         const titleErrors = tree.properties?.title?.errors || [];
+        const descriptionErrors = tree.properties?.description?.errors || [];
         const imageErrors = tree.properties?.imageUrl?.errors || [];
         const imageIdErrors = tree.properties?.imagePublicId?.errors || [];
         const categoryErrors = tree.properties?.category?.errors || [];
-        const message = [...titleErrors, ...imageErrors, ...imageIdErrors, ...categoryErrors].join(", ") || "Validation failed";
-
+        const message = [...titleErrors, ...descriptionErrors, ...imageErrors, ...imageIdErrors, ...categoryErrors].join(", ") || "Validation failed";
         return Response.json({
             success: false,
             message,
@@ -70,5 +70,30 @@ export async function POST(request: Request) {
         }, {
             status: 500
         })
+    }
+}
+
+export async function GET(request: Request) {
+    await dbConnect()
+
+    try {
+        const posts = await PostModel
+        .find({})
+        .sort({ createdAt: -1 })
+        .lean()
+
+        return Response.json({
+            success: true,
+            message: "Posts fetched successfully",
+            data: posts
+        }, { 
+            status: 200 
+        })
+    } catch (error) {
+        console.error("Fetch All Posts Error:", error)
+        return Response.json({
+            success: false,
+            message: "Internal Server Error"
+        }, { status: 500 })
     }
 }

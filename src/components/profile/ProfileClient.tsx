@@ -4,41 +4,34 @@ import axios from 'axios'
 import { Separator } from '@/components/ui/separator'
 import { Spinner } from '@/components/ui/spinner'
 import PostCard, { Post } from '@/components/post/PostCard'
-import Link from 'next/link'
+import { useRouter } from 'next/navigation'
+import { useSession } from 'next-auth/react'
 
 export default function ProfileClient({ username }: { username: string }) {
   const [posts, setPosts] = useState<Post[] | null>(null)
   const [loading, setLoading] = useState<boolean>(true)
+
+const { data: session } = useSession()
+    const user = session?.user 
+    //const router = useRouter()
 
   useEffect(() => {
     let mounted = true
     const fetchPosts = async () => {
       try {
         setLoading(true)
-        // First try fetching posts for the given username
         const encoded = encodeURIComponent(username)
         let res = await axios.get(`/api/posts/username=${encoded}`)
         if (!mounted) return
+
         if (res.status === 200 && res.data?.success) {
-          const d = res.data.data
-          setPosts(Array.isArray(d) ? d : [])
+          setPosts(Array.isArray(res.data.data) ? res.data.data : [])
           return
         }
-
-        // Fallback: fetch posts for the current session user
-        res = await axios.get('/api/posts/me')
-        if (!mounted) return
-        if (res.status === 200 && res.data?.success) {
-          const d = res.data.data
-          setPosts(Array.isArray(d) ? d : [])
-        } else {
-          setPosts([])
-        }
-      } catch (err) {
-        console.error('Fetch posts error', err)
+      } catch {
         setPosts([])
       } finally {
-        if (mounted) setLoading(false)
+        mounted && setLoading(false)
       }
     }
 
@@ -47,42 +40,73 @@ export default function ProfileClient({ username }: { username: string }) {
   }, [username])
 
   return (
-    <div className="max-w-4xl mx-auto p-6">
-      <header className="bg-slate-900/50 rounded-xl p-6 flex flex-col sm:flex-row items-center gap-6">
-        <div className="w-28 h-28 rounded-full bg-gradient-to-tr from-sky-500 to-indigo-600 flex items-center justify-center text-white text-2xl font-semibold">
-          {username ? username.charAt(0).toUpperCase() : 'U'}
-        </div>
-
-        <div className="flex-1 w-full">
-          <h1 className="text-2xl font-bold">{username}</h1>
-          <p className="text-sm text-slate-300 mt-1">Product-minded engineer. Writing about design, performance, and shipping faster.</p>
-
-          <div className="mt-4">
-            <div className="inline-flex items-baseline gap-2">
-              <span className="text-lg font-semibold">{posts ? posts.length : '—'}</span>
-              <span className="text-sm text-slate-400">Posts</span>
+    <div className="min-h-screen pt-16 pb-10 px-4">
+      <div className="max-w-4xl mx-auto space-y-8">
+        
+        {/* Profile Header */}
+        <header className="rounded-xl p-6 bg-slate-900/50">
+          <div className="flex flex-col sm:flex-row items-center sm:items-start gap-5">
+            <div className="w-20 h-20 rounded-full bg-linear-to-tr from-sky-500 to-indigo-600 flex items-center justify-center text-white text-xl font-semibold shadow-md shrink-0">
+              {username?.charAt(0).toUpperCase() ?? 'U'}
             </div>
-            <div className="text-sm text-slate-500 mt-2">Member since 2023</div>
-          </div>
-        </div>
-      </header>
 
-      <Separator className="my-6" />
+            <div className="flex-1 text-center sm:text-left space-y-2">
+              <h1 className="text-2xl font-bold">{user?.username ?? user?.name ?? "User"}</h1>
 
-      <section>
-        <h2 className="text-lg font-semibold mb-4">Recent posts</h2>
-        {loading ? (
-          <div className="flex items-center gap-2 text-sm text-slate-400"><Spinner /> Loading posts…</div>
-        ) : posts && posts.length > 0 ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            {posts.map((p) => (
-              <PostCard key={p._id} post={p} />
-            ))}
+              <p className="text-sm text-slate-300 max-w-md leading-relaxed mx-auto sm:mx-0">
+                Product-minded engineer. Writing about design, performance, and shipping faster.
+              </p>
+
+              <div className="mt-3 flex items-center justify-center sm:justify-start gap-4 text-sm text-slate-400">
+                <div className="flex items-baseline gap-1">
+                  <span className="text-lg font-semibold text-white">
+                    {posts ? posts.length : '—'}
+                  </span>
+                  <span>Posts</span>
+                </div>
+                <span className="hidden sm:inline text-slate-600">•</span>
+                <span>Member since 2023</span>
+              </div>
+            </div>
           </div>
-        ) : (
-          <div className="text-sm text-slate-400">You have not created a post yet.</div>
-        )}
-      </section>
+        </header>
+
+        <Separator />
+
+        {/* Posts Section */}
+        <section className="space-y-5">
+          <div>
+            <h2 className="text-lg font-semibold">Recent posts</h2>
+            {!loading && posts && (
+              <p className="text-sm text-slate-400 mt-1">
+                {posts.length === 0
+                  ? 'No posts yet'
+                  : `Showing ${posts.length} post${posts.length !== 1 ? 's' : ''}`}
+              </p>
+            )}
+          </div>
+
+          {loading ? (
+            <div className="flex items-center justify-center gap-3 py-16 text-slate-400">
+              <Spinner />
+              <span className="text-sm">Loading posts…</span>
+            </div>
+          ) : posts && posts.length > 0 ? (
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+              {posts.map((p) => (
+                <PostCard key={p._id} post={p} />
+              ))}
+            </div>
+          ) : (
+            <div className="text-center py-16 space-y-2">
+              <p className="text-slate-400">You have not created a post yet.</p>
+              <p className="text-sm text-slate-500">
+                Start sharing your thoughts and ideas with the community.
+              </p>
+            </div>
+          )}
+        </section>
+      </div>
     </div>
   )
 }

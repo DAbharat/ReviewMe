@@ -5,6 +5,8 @@ import PostModel from "@/model/post.model";
 import { User } from "next-auth";
 import mongoose from "mongoose";
 import { destroyImage } from "@/lib/cloudinary";
+import { updatePostSchema } from "@/schemas/updatePost.schema";
+import { z } from "zod";
 
 
 export async function GET(request: Request) {
@@ -24,13 +26,13 @@ export async function GET(request: Request) {
 
     try {
         const posts = await PostModel
-        .find({
-            createdBy: user._id
-        })
-        .sort({
-            createdAt: -1
-        })
-        .lean()
+            .find({
+                createdBy: user._id
+            })
+            .sort({
+                createdAt: -1
+            })
+            .lean()
 
         return Response.json({
             success: true,
@@ -64,9 +66,11 @@ export async function DELETE(request: Request) {
             status: 401
         })
     }
-
     try {
-        const { postId } = await request.json()
+
+        const url = new URL(request.url)
+        const parts = url.pathname.split('/').filter(Boolean)
+        const postId = parts[parts.length - 1]
 
         const isValidPostId = mongoose.Types.ObjectId.isValid(postId)
 
@@ -99,13 +103,13 @@ export async function DELETE(request: Request) {
             })
         }
 
-                if (post.imagePublicId) {
-                    try {
-                        await destroyImage(post.imagePublicId)
-                    } catch (cloudErr) {
-                        console.warn("Cloudinary destroy warning:", cloudErr);
-                    }
-                }
+        if (post.imagePublicId) {
+            try {
+                await destroyImage(post.imagePublicId)
+            } catch (cloudErr) {
+                console.warn("Cloudinary destroy warning:", cloudErr);
+            }
+        }
 
         await PostModel.findByIdAndDelete(postId)
 
@@ -121,7 +125,7 @@ export async function DELETE(request: Request) {
         console.log("Delete Post Error:", error)
         return Response.json({
             success: false,
-            message: "Internal Sever Error"
+            message: "Internal Server Error"
         }, {
             status: 500
         })
@@ -143,18 +147,46 @@ export async function PUT(request: Request) {
         })
     }
 
-    try {
-        const { postId, title, description, category, imageUrl, imagePublicId } = await request.json()
-        const isValidPostId = mongoose.Types.ObjectId.isValid(postId)
+    const url = new URL(request.url)
+    const parts = url.pathname.split('/').filter(Boolean)
+    const postId = parts[parts.length - 1]
 
-        if (!postId || !isValidPostId) {
-            return Response.json({
-                success: false,
-                message: "invalid Post ID"
-            }, {
-                status: 400
-            })
-        }
+    const isValidPostId = mongoose.Types.ObjectId.isValid(postId)
+
+
+    if (!postId || !isValidPostId) {
+        return Response.json({
+            success: false,
+            message: "invalid Post ID"
+        }, {
+            status: 400
+        })
+    }
+
+    const body = await request.json()
+    const parsed = updatePostSchema.safeParse(body)
+
+
+    if (!parsed.success) {
+        const tree = z.treeifyError(parsed.error)
+        const titleErrors = tree.properties?.title?.errors || [];
+        const imageErrors = tree.properties?.imageUrl?.errors || [];
+        const imageIdErrors = tree.properties?.imagePublicId?.errors || [];
+        const categoryErrors = tree.properties?.category?.errors || [];
+        const message = [...titleErrors, ...imageErrors, ...imageIdErrors, ...categoryErrors].join(", ") || "Validation failed";
+
+        return Response.json({
+            success: false,
+            message,
+            errors: tree
+        }, {
+            status: 400
+        })
+    }
+
+    const { title, description, imageUrl, imagePublicId, category } = parsed.data
+
+    try {
 
         const post = await PostModel.findById(postId)
 
@@ -176,16 +208,16 @@ export async function PUT(request: Request) {
             })
         }
 
-        if (typeof title === "string" && title.trim().length > 0) {
+        if (title?.trim()) {
             post.title = title.trim()
         }
 
-        if (typeof description === "string" && description !== undefined) {
-            post.description = description.trim()
+        if (typeof description === "string") {
+            post.description = description?.trim()
         }
 
-        if (typeof category === "string" && category.trim().length > 0) {
-            post.category = category.trim()
+        if (category?.trim()) {
+            post.category = category
         }
 
         if (imageUrl && imagePublicId) {

@@ -180,8 +180,7 @@ export default function Page() {
               <div>
                 <label className="block text-sm font-medium mb-2">Description</label>
                 <InputGroup>
-                  
-                  <InputGroupTextarea placeholder="Give a little description about this post..." className="w-full" />
+                  <InputGroupTextarea placeholder="Give a little description about this post..." className="w-full" value={description} onChange={(e) => setDescription(e.target.value)}/>
                     
                     {imageUrl && (
                     <div className="w-full mb-3 rounded-md overflow-hidden pl-4 pr-4">
