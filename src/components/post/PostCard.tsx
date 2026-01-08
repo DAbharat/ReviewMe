@@ -9,6 +9,8 @@ import { MoreHorizontal, MessageCircle, Flag, Trash, PencilLine, Dot } from 'luc
 import { Button } from '../ui/button'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator } from '../ui/dropdown-menu'
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "../ui/alert-dialog"
+import CommentForm from '../comments/CommentForm'
+
 
 
 export type Post = {
@@ -24,7 +26,7 @@ export type Post = {
 
 
 export default function PostCard({ post }: { post?: Post }) {
-  console.log("POST DATA:", post)
+  //console.log("POST DATA:", post)
   const [isLoading, setIsLoading] = useState(false)
   const { data: session } = useSession()
   const router = useRouter()
@@ -35,8 +37,9 @@ export default function PostCard({ post }: { post?: Post }) {
   const [open, setOpen] = useState(false)
   const [deletePostId, setDeletePostId] = useState<string | null>(null)
   const [menuOpen, setMenuOpen] = useState(false)
-
-
+  const [showComments, setShowComments] = useState(false)
+const [commentContent, setCommentContent] = useState("")
+const [localCommentCount, setLocalCommentCount] = useState<number>(post?.commentCount ?? 0)
 
   const isOwner =
     Boolean(
@@ -45,9 +48,9 @@ export default function PostCard({ post }: { post?: Post }) {
       String(session.user._id) === String(post.createdBy)
     )
 
-    // console.log( session?.user?._id, session?.user,
-    //   post?.createdBy,
-    //   session?.user._id, post?.createdBy)
+  // console.log( session?.user?._id, session?.user,
+  //   post?.createdBy,
+  //   session?.user._id, post?.createdBy)
 
   const handleDeleteClick = async (postId: string) => {
     if (!session) {
@@ -115,6 +118,28 @@ export default function PostCard({ post }: { post?: Post }) {
     }
 
   }
+
+  const handleCreateComment = async () => {
+  if (!session) { toast.error('You must be signed in to comment.'); return; }
+  if (!post?._id) {
+    toast.error('Invalid post ID.');
+    return;
+  }
+
+  try {
+    setIsLoading(true);
+    const result = await axios.post<ApiResponse>(`/api/posts/${post._id}/comments`, { content: commentContent });
+    setCommentContent('');
+    toast.success('Comment posted.');
+    setLocalCommentCount((c) => c + 1)
+    router.refresh(); 
+  } catch (err) {
+    const axiosError = err as AxiosError<ApiResponse>;
+    toast.error(axiosError.response?.data.message || 'Failed to post comment.');
+  } finally {
+    setIsLoading(false);
+  }
+}
 
 
   return (
@@ -224,16 +249,29 @@ export default function PostCard({ post }: { post?: Post }) {
       {/* Footer actions */}
       <footer className="mt-4 flex items-center text-sm">
         <div className="flex items-center gap-4">
-          <Button className="flex items-center gap-2 text-gray-600 hover:text-gray-900 transition-colors px-0">
+          <Button
+            onClick={() => router.push(`/comments/${post?._id}`)}
+            className="flex items-center gap-2 text-gray-600 hover:text-gray-900 transition-colors px-0"
+            variant="ghost"
+          >
             <MessageCircle className="w-5 h-5" />
-            <span className="font-medium">{post?.commentCount}</span>
+            <span className="font-medium">{localCommentCount}</span>
           </Button>
+
           <Dot className="text-gray-300 -mx-2" />
           <p className="text-gray-600 font-medium">
             <span className="text-gray-400">Category:</span> {post?.category}
           </p>
         </div>
       </footer>
+      <div className="mt-4">
+    <CommentForm
+      value={commentContent}
+      onChange={setCommentContent}
+      onSubmit={handleCreateComment}
+      isLoading={isLoading}
+    />
+  </div>
     </article>
   );
 }

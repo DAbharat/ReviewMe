@@ -6,6 +6,7 @@ import { User } from "next-auth";
 import { postSchema } from "@/schemas/post.schema";
 import { z } from "zod";
 import mongoose from "mongoose";
+import CommentModel from "@/model/comment.model";
 
 
 export async function POST(request: Request) {
@@ -97,3 +98,4 @@ export async function GET(request: Request) {
         }, { status: 500 })
     }
 }
+

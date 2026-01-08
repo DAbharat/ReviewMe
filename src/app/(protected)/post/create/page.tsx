@@ -203,7 +203,7 @@ export default function Page() {
                         <InputGroupText>Upload Image</InputGroupText>
                       </DropdownMenuTrigger>
                     </DropdownMenu>
-                    <Separator orientation="vertical" className="!h-4" />
+                    <Separator orientation="vertical" className="h-4!" />
                   </InputGroupAddon>
 
                   

@@ -5,6 +5,52 @@ import PostModel from "@/model/post.model";
 import CommentModel from "@/model/comment.model";
 import { User } from "next-auth";
 import mongoose from "mongoose";
+import { updateCommentSchema } from "@/schemas/updateComment.schema";
+import z from "zod";
+
+
+export async function GET(
+  request: Request,
+  { params }: { params: { postId: string } }
+) {
+  await dbConnect();
+
+  const sessionAuth = await getServerSession(authOptions);
+  const user: User = sessionAuth?.user;
+
+  if (!sessionAuth || !user || !user._id) {
+    return Response.json({ 
+        success: false, 
+        message: "Not Authenticated" 
+    }, { 
+        status: 401 
+    });
+  }
+
+  try {
+    const comments = await CommentModel.find({ postId: params.postId })
+      .populate("userId", "username _id")
+      .sort({ createdAt: -1 })
+      .lean();
+
+    return Response.json({ 
+        success: true, 
+        message: "Comments fetched successfully", 
+        data: comments }, 
+        { 
+            status: 200 
+        });
+  } catch (error) {
+    console.error("Error fetching comments:", error);
+    return Response.json({ 
+        success: false, 
+        message: "Internal Server Error" 
+    }, { 
+        status: 500 
+    });
+  }
+}
+
 
 export async function DELETE(
     request: Request,
@@ -88,4 +134,103 @@ export async function DELETE(
             status: 500
         })
     }
+}
+
+export async function PUT(request: Request,
+    {
+        params,
+    }: {
+        params: {
+            postId: string;
+            commentId: string;
+        };
+    }
+) {
+    await dbConnect()
+
+    const sessionAuth = await getServerSession(authOptions)
+    const user: User = await sessionAuth?.user
+
+    if(!sessionAuth || !user || !user._id) {
+        return Response.json({
+            success: false,
+            message: "Not Authenticated"
+        }, {
+            status: 401
+        })
+    }
+
+    const { postId, commentId } = params;
+    const isValidPostId = mongoose.Types.ObjectId.isValid(postId)
+    const isValidCommentId = mongoose.Types.ObjectId.isValid(commentId)
+
+    if (!postId || !commentId || !isValidPostId || !isValidCommentId) {
+        return Response.json({
+            success: false,
+            message: "Invalid postId or commentId"
+        }, {
+            status: 400
+        });
+    }
+
+    const body = request.json()
+    const parsed = updateCommentSchema.safeParse(body)
+
+    if(!parsed.success) {
+        const tree = z.treeifyError(parsed.error)
+        const contentErrors = tree.properties?.content?.errors || []
+        const message = contentErrors.join(", ") || "Validation failed"
+
+        return Response.json({
+            success: false,
+            message,
+            errors: tree
+        }, {
+            status: 400
+        })
+    }
+
+        const { content } = parsed.data
+
+    try {
+
+        const updateComment = await CommentModel.findById(commentId)
+        if(!updateComment || updateComment.postId.toString() !== postId) {
+            return Response.json({
+                success: false,
+                message: "Comment not found"
+            }, {
+                status: 404
+            })
+        }
+
+        if(updateComment.userId.toString() !== user._id) {
+            return Response.json({
+                success: false,
+                message: "Unauthorized to update this comment"
+            }, {
+                status: 403
+            })
+        }
+
+        updateComment.content = content;
+        await updateComment.save();
+
+        return Response.json({
+            success: true,
+            message: "Comment updated successfully",
+            data: updateComment
+        }, {
+            status: 200
+        })
+    } catch (error) {
+        console.error("Error updating comment:", error);
+        return Response.json({
+            success: false,
+            message: "Error updating comment"
+        }, {
+            status: 500
+        })
+    }
+    
 }

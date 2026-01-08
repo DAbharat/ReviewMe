@@ -52,7 +52,7 @@ export default function page() {
           ) : posts && posts.length > 0 ? (
             <div className="space-y-6">
               {posts.map((post) => (
-                <PostCard key={post._id} post={post} />
+                <PostCard post={post} key={post._id} />
               ))}
             </div>
           ) : (
