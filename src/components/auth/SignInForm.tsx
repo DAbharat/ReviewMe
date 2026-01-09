@@ -49,7 +49,15 @@ export default function SignInForm() {
         }
 
         if (result?.ok) {
-            router.push(`/profile/${data.username}`)
+            // fetch session to get the canonical username (handles email sign-in)
+            try {
+                const sess = await fetch('/api/auth/session').then(r => r.json())
+                const slug = sess?.user?.username || sess?.user?._id || data.username || ''
+                if (slug) router.push(`/profile/${slug}`)
+                else router.push('/')
+            } catch (e) {
+                router.push('/')
+            }
         }
     }
 

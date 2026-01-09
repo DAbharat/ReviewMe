@@ -29,19 +29,28 @@ export async function POST(request: Request,
         })
     }
 
-    const { postId } = params
-    const isValidPostId = mongoose.Types.ObjectId.isValid(postId)
+    const body = await request.json()
+    const { postId: paramPostId } = params
 
-    if(!postId || !isValidPostId) {
-        return Response.json({
-            success: false,
-            message: "Invalid post Id"
-        }, {
-            status: 400
-        })
+    let postId = paramPostId
+    const isValidParamId = mongoose.Types.ObjectId.isValid(postId)
+
+    if(!postId || !isValidParamId) {
+
+        const bodyPostId = body?.postId
+        if (bodyPostId && mongoose.Types.ObjectId.isValid(bodyPostId)) {
+            postId = bodyPostId
+            console.warn('vote route: using postId from body because param was invalid', { paramPostId, bodyPostId })
+        } else {
+            return Response.json({
+                success: false,
+                message: "Invalid post Id"
+            }, {
+                status: 400
+            })
+        }
     }
 
-    const body = await request.json()
     const parsed = voteSchema.safeParse(body)
 
     if(!parsed.success) {
@@ -83,65 +92,42 @@ export async function POST(request: Request,
             })
         }
 
-        let existingVote = await VoteModel.findOne({
-            postId,
-            userId
-        })
+        // Use a transaction to atomically create the Vote and increment the post poll count
+        const sessionDb = await mongoose.startSession()
+        try {
+            let createdVote: any = null
+            await sessionDb.withTransaction(async () => {
+                // re-check inside transaction
+                const existing = await VoteModel.findOne({ postId, userId }).session(sessionDb)
+                if (existing) {
+                    createdVote = existing
+                    return
+                }
 
-        if(!existingVote) {
-            try {
-                await VoteModel.create({
-                    postId,
-                    userId,
-                    option
-                })
+                createdVote = await VoteModel.create([
+                    { postId, userId, option }
+                ], { session: sessionDb })
 
                 await PostModel.updateOne(
-                    {
-                        _id: postId,
-                        "poll.label": option
-                    },
-                    {
-                        $inc: {
-                            "poll.$.votes": 1
-                        }
-                    }
+                    { _id: postId, "poll.label": option },
+                    { $inc: { "poll.$.votes": 1 } },
+                    { session: sessionDb }
                 )
-            } catch (error: any) {
-                if(error?.code === 11000) {
-                    existingVote = await VoteModel.findOne({
-                        postId,
-                        userId
-                    })
-                } else throw error
+            })
+
+            // if a vote already existed, return idempotent response
+            if (createdVote && Array.isArray(createdVote) && createdVote.length === 0) {
+                // shouldn't happen, but handle defensively
             }
-        } else if (existingVote && existingVote.option !== option) {
-            await PostModel.updateOne(
-                {
-                    _id: postId,
-                    "poll.label": existingVote.option
-                },
-                {
-                    $inc: {
-                        "poll.$.votes": -1
-                    }
-                }
-            )
 
-            await PostModel.updateOne(
-                {
-                    _id: postId,
-                    "poll.label": option
-                },
-                {
-                    $inc: {
-                        "poll.$.votes": 1
-                    }
-                }
-            )
-
-            existingVote.option = option
-            await existingVote.save()
+            if (createdVote && createdVote._id) {
+                // created a new vote
+            } else if (createdVote && createdVote.option) {
+                // existing vote found
+                return Response.json({ success: true, message: "Already voted", data: { option: createdVote.option } }, { status: 200 })
+            }
+        } finally {
+            sessionDb.endSession()
         }
 
         return Response.json({

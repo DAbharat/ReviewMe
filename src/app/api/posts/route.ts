@@ -77,18 +77,47 @@ export async function POST(request: Request) {
 export async function GET(request: Request) {
     await dbConnect()
 
+    const url = new URL(request.url)
+    const mine = url.searchParams.get('mine') === 'true'
+
     try {
+
+        if (mine) {
+            const session = await getServerSession(authOptions)
+            if (!session?.user?._id) {
+                return Response.json({ 
+                    success: false, 
+                    message: 'Not Authenticated' 
+                }, { 
+                    status: 401 
+                })
+            }
+            const posts = await PostModel.find({ createdBy: session.user._id })
+                .populate('createdBy', '_id username imageUrl')
+                .sort({ createdAt: -1 })
+                .lean()
+
+            return Response.json({ 
+                success: true, 
+                message: "User Posts fetched successfully",
+                data: posts 
+            }, { 
+                status: 200 
+            })
+        }
+
         const posts = await PostModel
-        .find({})
-        .sort({ createdAt: -1 })
-        .lean()
+            .find({})
+            .populate("createdBy", "_id username imageUrl")
+            .sort({ createdAt: -1 })
+            .lean()
 
         return Response.json({
             success: true,
             message: "Posts fetched successfully",
             data: posts
-        }, { 
-            status: 200 
+        }, {
+            status: 200
         })
     } catch (error) {
         console.error("Fetch All Posts Error:", error)

@@ -24,14 +24,25 @@ export async function GET(request: Request) {
         })
     }
 
+    const url = new URL(request.url)
+        const parts = url.pathname.split('/').filter(Boolean)
+        const postId = parts[parts.length - 1]
+
+        const isValidPostId = mongoose.Types.ObjectId.isValid(postId)
+
+        if (!postId || !isValidPostId) {
+            return Response.json({
+                success: false,
+                message: "Invalid Post ID"
+            }, {
+                status: 400
+            })
+        }
+
     try {
         const posts = await PostModel
-            .find({
-                createdBy: user._id
-            })
-            .sort({
-                createdAt: -1
-            })
+            .findById(postId)
+            .populate("createdBy", "_id username imageUrl")
             .lean()
 
         return Response.json({

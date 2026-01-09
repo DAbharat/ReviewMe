@@ -10,6 +10,7 @@ import { Button } from '../ui/button'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator } from '../ui/dropdown-menu'
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "../ui/alert-dialog"
 import CommentForm from '../comments/CommentForm'
+import PollOption from './Poll/PollOption'
 
 
 
@@ -146,16 +147,15 @@ const [localCommentCount, setLocalCommentCount] = useState<number>(post?.comment
     <article className="bg-white border border-gray-100 mt-6 rounded-3xl p-6 shadow-sm hover:shadow-md transition-shadow duration-300">
       {/* Header */}
       <header className="flex items-start gap-3">
-        <img
-          src={post?.createdBy?.imageUrl}
-          alt={post?.createdBy?.username}
-          className="w-6 h-6 rounded-full object-cover ring-2 ring-gray-100"
-          loading="lazy"
-        />
+        <div>
+          <div className="w-6 h-6 rounded-full bg-linear-to-tr from-sky-500 to-indigo-600 flex items-center justify-center text-white text-md font-semibold shadow-md shrink-0">
+              {post?.createdBy?.username?.charAt(0).toUpperCase() ?? 'U'}
+            </div>
+        </div>
         <div className="flex-1">
           <div className="flex items-center justify-between">
-            <div className="text-sm mb-3 font-semibold text-gray-900">
-              {session?.user?.username}
+            <div className="text-md mb-4  font-semibold text-gray-900">
+              {post?.createdBy?.username || 'Unknown User'}
             </div>
             <DropdownMenu open={menuOpen} onOpenChange={setMenuOpen}>
               <DropdownMenuTrigger asChild>
@@ -247,31 +247,38 @@ const [localCommentCount, setLocalCommentCount] = useState<number>(post?.comment
       </div>
 
       {/* Footer actions */}
-      <footer className="mt-4 flex items-center text-sm">
-        <div className="flex items-center gap-4">
-          <Button
-            onClick={() => router.push(`/comments/${post?._id}`)}
-            className="flex items-center gap-2 text-gray-600 hover:text-gray-900 transition-colors px-0"
-            variant="ghost"
-          >
-            <MessageCircle className="w-5 h-5" />
-            <span className="font-medium">{localCommentCount}</span>
-          </Button>
+      <footer className="mt-4 flex items-center justify-end text-sm">
+  <div className="flex items-center gap-4">
+    <Button
+      onClick={() => router.push(`/comments/${post?._id}`)}
+      className="flex items-center gap-2 text-gray-600 hover:text-gray-900 transition-colors px-0"
+      variant="ghost"
+    >
+      <MessageCircle className="w-5 h-5" />
+      <span className="font-medium">{localCommentCount}</span>
+    </Button>
 
-          <Dot className="text-gray-300 -mx-2" />
-          <p className="text-gray-600 font-medium">
-            <span className="text-gray-400">Category:</span> {post?.category}
-          </p>
-        </div>
-      </footer>
-      <div className="mt-4">
+    <Dot className="text-gray-300 -mx-2" />
+
+    <p className="text-gray-600 font-medium">
+      <span className="text-gray-400">Category:</span> {post?.category}
+    </p>
+  </div>
+
+  
+</footer>
+{post?._id && (
+  <PollOption postId={String(post._id)} pollRefreshIntervalMs={15000} />
+)}
+
+      {/* <div className="mt-4">
     <CommentForm
       value={commentContent}
       onChange={setCommentContent}
       onSubmit={handleCreateComment}
       isLoading={isLoading}
     />
-  </div>
+  </div> */}
     </article>
   );
 }

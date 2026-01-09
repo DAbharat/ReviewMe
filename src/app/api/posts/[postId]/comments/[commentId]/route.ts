@@ -77,7 +77,8 @@ export async function DELETE(
         });
     }
 
-    const { postId, commentId } = params;
+
+    const { postId, commentId } = await params;
     const isValidPostId = mongoose.Types.ObjectId.isValid(postId)
     const isValidCommentId = mongoose.Types.ObjectId.isValid(commentId)
 
@@ -124,6 +125,14 @@ export async function DELETE(
                 }
             }
         )
+
+        return Response.json({
+            success: true,
+            message: "Comment deleted successfully",
+            data: commentId
+        }, {
+            status: 200
+        })
 
     } catch (error) {
         console.error("Error deleting comment:", error);
@@ -173,7 +182,7 @@ export async function PUT(request: Request,
         });
     }
 
-    const body = request.json()
+    const body = await request.json()
     const parsed = updateCommentSchema.safeParse(body)
 
     if(!parsed.success) {

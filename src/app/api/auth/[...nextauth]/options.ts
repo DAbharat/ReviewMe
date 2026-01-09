@@ -90,18 +90,20 @@ export const authOptions: AuthOptions = {
         async jwt({ token, user }) {
 
             if (user) {
-                token._id = user._id?.toString();
-                token.username = user.username;
-                token.email = user.email;
+                const maybeId = (user as any)?._id?.toString() || (user as any)?.id || token.sub
+                if (maybeId) token._id = maybeId
+                token.username = (user as any)?.username || token.username
+                token.email = (user as any)?.email || token.email
             }
             return token;
         },
         async session({ session, token }) {
+            session.user = session.user || ({} as any)
 
             if (token) {
-                session.user._id = token._id;
-                session.user.username = token.username;
-                session.user.email = token.email;
+                session.user._id = (token as any)._id || (token as any).sub || session.user._id
+                session.user.username = (token as any).username || session.user.username
+                session.user.email = (token as any).email || session.user.email
             }
             return session;
         }
