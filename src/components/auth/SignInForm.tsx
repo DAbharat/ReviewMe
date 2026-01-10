@@ -62,12 +62,12 @@ export default function SignInForm() {
     }
 
     return (
-        <div className="min-h-screen flex flex-col items-center justify-start bg-[#BBC7A4] py-8">
+        <div className="min-h-screen flex flex-col items-center justify-start bg-[#EFE9D5] py-8">
             <header className="text-center mb-8">
                 <h1 className="text-4xl md:text-5xl font-extrabold text-[#0f2430]">Welcome to ReviewMe</h1>
-                <p className="mt-4 text-md text-[#415a57]">To continue, fill out your personal info</p>
+                <p className="mt-4 text-md text-gray-500 font-semibold">To continue, fill out your personal info</p>
             </header>
-            <div className="w-full max-w-lg bg-[#F2F5EA] border-2 border-black rounded-2xl shadow-md p-6">
+            <div className="w-full max-w-lg bg-white border-2 border-black border-b-3 rounded-2xl shadow-md p-6">
                 <h2 className="text-3xl font-bold text-[#0f2430] mb-4 text-center">Sign in to your account</h2>
                 <p className="text-center text-sm text-[#6b8b84] mb-6">Enter your credentials or sign in via Google</p>
                 <form onSubmit={form.handleSubmit(onSubmit)}>
@@ -84,7 +84,7 @@ export default function SignInForm() {
                                             {...field}
                                             type={loginType === "email" ? "email" : "text"}
                                             placeholder={loginType === "email" ? "Email" : "Username"}
-                                            className="pr-12 border border-[#cfe8e1] focus:border-[#2f6b61]"
+                                            className="pr-12 border font-semibold placeholder:text-gray-400 border-black border-b-2"
                                         />
 
                                         <DropdownMenu>
@@ -98,7 +98,7 @@ export default function SignInForm() {
                                             </DropdownMenuTrigger>
 
                                             <DropdownMenuContent align="end">
-                                                <DropdownMenuItem onClick={() => setLoginType("email")}>
+                                                <DropdownMenuItem className="font-semibold" onClick={() => setLoginType("email")}>
                                                     Email
                                                 </DropdownMenuItem>
                                                 <DropdownMenuItem onClick={() => setLoginType("username")}>
@@ -118,7 +118,7 @@ export default function SignInForm() {
                             name="password"
                             render={({ field, fieldState }) => (
                                 <Field data-invalid={fieldState.invalid}>
-                                    <FieldLabel htmlFor={field.name} className="sr-only">Password</FieldLabel>
+                                    <FieldLabel htmlFor={field.name} className="sr-only ">Password</FieldLabel>
                                     <FieldContent>
                                         <Input
                                             id={field.name}
@@ -126,7 +126,7 @@ export default function SignInForm() {
                                             {...field}
                                             aria-invalid={fieldState.invalid}
                                             placeholder="Password"
-                                            className="border border-[#cfe8e1] focus:border-[#2f6b61] rounded-md px-4 py-3 placeholder:text-[#9bbdb6]"
+                                            className="border border-black border-b-2 rounded-md px-4 py-3 font-semibold placeholder:text-gray-400"
                                         />
                                         {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
                                     </FieldContent>
@@ -135,17 +135,17 @@ export default function SignInForm() {
                         />
                     </FieldGroup>
 
-                    <div className="mt-4">
+                    <div className="mt-8">
                         <Button
                             aria-label="submit"
                             disabled={isSubmitting}
-                            className="w-md rounded-md bg-[#44786f] hover:bg-[#315951] text-white font-semibold py-3 border-2 disabled:opacity-60"
+                            className="w-md rounded-md bg-white text-black font-semibold py-3 border border-black border-b-2 disabled:opacity-60"
                         >
                             {isSubmitting ? "Signing In..." : "Sign In"}
                         </Button>
                     </div>
 
-                    <div className="mt-4 mb-4">
+                    <div className="mt-2 mb-2">
                         <p className="text-center">or</p>
                     </div>
 
@@ -153,7 +153,7 @@ export default function SignInForm() {
                         <Button
                             aria-label="submit"
                             onClick={() => signIn("google", { callbackUrl: "/" })}
-                            className="w-full bg-white border border-gray-600 rounded-lg py-2 flex items-center justify-center gap-2 hover:bg-gray-50 transition text-black"
+                            className="w-full bg-white border border-black border-b-2 rounded-lg py-2 flex items-center justify-center gap-2 hover:bg-gray-50 transition text-black"
                         >
                             Continue with Google
                         </Button>

@@ -29,10 +29,15 @@ import { useState } from "react"
 
 
 
+export function AppSidebar() {
 
-const items = [
-  { title: "Home", url: "#", icon: Home },
-  { title: "User", url: "#", icon: User },
+  const [open, setOpen] = useState(false)
+
+  const { data: session } = useSession()
+
+  const items = [
+  { title: "Home", url: "/feed", icon: Home },
+  { title: "User", url: `/profile/${session?.user?.username || (session?.user as any)?._id}`, icon: User },
   { title: "Settings", url: "#", icon: Settings },
 ]
 
@@ -41,11 +46,6 @@ const helpActions = [
   { title: "Feedback", url: "#", icon: MessageSquareText },
 ]
 
-export function AppSidebar() {
-
-  const [open, setOpen] = useState(false)
-
-  const { data: session } = useSession()
 
   const handleSignoutClick = () => {
     if (!session) {
@@ -164,16 +164,16 @@ export function AppSidebar() {
           </SidebarMenu>
         </SidebarFooter>
         <AlertDialog open={open} onOpenChange={setOpen}>
-          <AlertDialogContent>
+          <AlertDialogContent className="bg-[#EFE9D5] border border-black border-b-2">
             <AlertDialogHeader>
-              <AlertDialogTitle>Are you sure you want to sign out?</AlertDialogTitle>
-              <AlertDialogDescription>
+              <AlertDialogTitle className="font-bold">Are you sure you want to sign out?</AlertDialogTitle>
+              <AlertDialogDescription className="font-semibold">
                 You can sign back in anytime.
               </AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter>
-              <AlertDialogCancel>Cancel</AlertDialogCancel>
-              <AlertDialogAction onClick={confirmSignout}>
+              <AlertDialogCancel className="border border-amber-900">Cancel</AlertDialogCancel>
+              <AlertDialogAction onClick={confirmSignout} className="text-white bg-red-600">
                 Continue
               </AlertDialogAction>
             </AlertDialogFooter>

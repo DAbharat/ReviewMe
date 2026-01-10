@@ -29,13 +29,13 @@ export default function CommentCard({
   onReport,
 }: CommentCardProps) {
   return (
-    <article className="bg-white border rounded-2xl p-4">
+    <article className="bg-[#EFE9D5] border border-black border-b-2 rounded-2xl p-4">
       <div className="flex gap-3">
         {imageUrl ? (
           <img src={imageUrl} className="w-8 h-8 rounded-full" />
         ) : (
-          <div className="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center">
-            {username.charAt(0)}
+          <div className="w-6 h-6 rounded-full bg-black text-white text-md flex items-center justify-center">
+            {username.charAt(0).toUpperCase()}
           </div>
         )}
 
@@ -45,19 +45,19 @@ export default function CommentCard({
 
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button size="icon" variant="ghost">
-                  <MoreHorizontal className="w-4 h-4" />
+                <Button className='bg-[#EFE9D5] border border-black border-b-2 hover:bg-[#a79968]' size="icon" variant="ghost">
+                  <MoreHorizontal className="w-4 h-4 " />
                 </Button>
               </DropdownMenuTrigger>
 
-              <DropdownMenuContent align="end">
+              <DropdownMenuContent className="bg-[#EFE9D5] border border-black border-b-2" align="end">
                 {isOwner ? (
                   <>
-                    <DropdownMenuItem onClick={onEdit}>
-                      <PencilLine className="w-4 h-4 mr-2" /> Edit
+                    <DropdownMenuItem onClick={onEdit} className='font-bold cursor-pointer'>
+                      <PencilLine className="w-4 h-4 mr-2 " /> Edit
                     </DropdownMenuItem>
-                    <DropdownMenuSeparator />
-                    <DropdownMenuItem onClick={onDelete} className="text-red-600">
+                    <DropdownMenuSeparator/>
+                    <DropdownMenuItem onClick={onDelete} className="text-red-600 font-bold cursor-pointer">
                       <Trash className="w-4 h-4 mr-2" /> Delete
                     </DropdownMenuItem>
                   </>

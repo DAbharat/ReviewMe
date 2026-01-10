@@ -22,8 +22,8 @@ export type Comment = {
 export default function CommentPage({ postId }: { postId: string }) {
 
     const { data: session } = useSession()
-const [open, setOpen] = useState(false)
-const [selectedComment, setSelectedComment] = useState<string | null>(null)
+    const [open, setOpen] = useState(false)
+    const [selectedComment, setSelectedComment] = useState<string | null>(null)
 
     const getUserId = (c: Comment) => typeof c.userId === 'string' ? c.userId : c.userId?._id
     const isOwner = (c: Comment) => !!session?.user?._id && session.user._id === String(getUserId(c))
@@ -67,9 +67,9 @@ const [selectedComment, setSelectedComment] = useState<string | null>(null)
         setOpen(true)
     }
 
-    const confirmDelete = async() => {
+    const confirmDelete = async () => {
 
-        if(!selectedComment) {
+        if (!selectedComment) {
             toast.error("No comment selected")
             return
         }
@@ -88,14 +88,9 @@ const [selectedComment, setSelectedComment] = useState<string | null>(null)
     }
 
     return (
-        <div className="mt-6 space-y-6">
+        <div className="mt-6 space-y-6 bg-[#EFE9D5]">
 
-            {/* <CommentForm
-                value={content}
-                onChange={setContent}
-                onSubmit={() => createComment(content)}
-                isLoading={isLoading}
-            /> */}
+
 
             <div className="space-y-4">
                 {comments.length === 0 ? (
@@ -117,31 +112,31 @@ const [selectedComment, setSelectedComment] = useState<string | null>(null)
                             />
                         )
                     })
-                    
+
                 )
                 }
             </div>
-<AlertDialog open={open} onOpenChange={setOpen}>
-  <AlertDialogContent>
-    <AlertDialogHeader>
-      <AlertDialogTitle>Delete comment?</AlertDialogTitle>
-      <AlertDialogDescription>
-        This action cannot be undone.
-      </AlertDialogDescription>
-    </AlertDialogHeader>
+            <AlertDialog open={open} onOpenChange={setOpen}>
+                <AlertDialogContent className='bg-[#EFE9D5] border border-black border-b-2'>
+                    <AlertDialogHeader>
+                        <AlertDialogTitle className='font-bold'>Delete comment?</AlertDialogTitle>
+                        <AlertDialogDescription className='font-semibold'>
+                            This action cannot be undone.
+                        </AlertDialogDescription>
+                    </AlertDialogHeader>
 
-    <AlertDialogFooter>
-      <AlertDialogCancel>Cancel</AlertDialogCancel>
+                    <AlertDialogFooter>
+                        <AlertDialogCancel className='border border-amber-900'>Cancel</AlertDialogCancel>
 
-      <AlertDialogAction
-        onClick={confirmDelete}
-        className="bg-red-600 hover:bg-red-700"
-      >
-        Delete
-      </AlertDialogAction>
-    </AlertDialogFooter>
-  </AlertDialogContent>
-</AlertDialog>
+                        <AlertDialogAction
+                            onClick={confirmDelete}
+                            className="bg-red-600 hover:bg-red-700"
+                        >
+                            Delete
+                        </AlertDialogAction>
+                    </AlertDialogFooter>
+                </AlertDialogContent>
+            </AlertDialog>
         </div>
     )
 }

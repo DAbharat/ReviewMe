@@ -36,7 +36,7 @@ export default function Navbar() {
                                         <Button
                                             variant="outline"
                                             size="sm"
-                                            className="border-2 border-black bg-white text-[#0f2430] hover:bg-[#0f2430] hover:text-white transition-colors h-9 w-9 p-0"
+                                            className="border-2 border-black border-b-3 bg-[#EFE9D5] text-[#0f2430] hover:bg-[#a79968] hover:text-white transition-colors h-9 w-9 p-0"
                                             onClick={() => profileSlug && router.push(`/profile/${profileSlug}`)}
                                             aria-label="Open profile"
                                         >
@@ -47,7 +47,7 @@ export default function Navbar() {
                                 <Button
                                     variant="outline"
                                     size="sm"
-                                    className="border-2 border-black bg-white text-[#0f2430] hover:bg-[#0f2430] hover:text-white transition-colors font-medium px-4 h-9"
+                                    className="border-2 border-black border-b-3 bg-[#EFE9D5] text-[#0f2430] hover:bg-[#a79968] hover:text-white transition-colors font-medium px-4 h-9"
                                     onClick={() => router.push(`/post/create`)}
                                 >
                                     Create Post
@@ -59,7 +59,7 @@ export default function Navbar() {
                                     <Button 
                                         variant="outline" 
                                         size="sm" 
-                                        className="border-2 border-black bg-white text-[#0f2430] hover:bg-[#0f2430] hover:text-white transition-colors font-medium px-4 h-9"
+                                        className="border border-black border-b-2 bg-[#ebdfbb] hover:bg-[#a79968] text-black transition-colors font-medium px-4 h-9"
                                     >
                                         Sign In
                                     </Button>
@@ -68,7 +68,7 @@ export default function Navbar() {
                                 <Link href="/sign-up">
                                     <Button 
                                         size="sm" 
-                                        className="bg-[#bff0a0] border-2 border-black text-[#0f2430] hover:bg-[#a8d98f] transition-colors font-medium px-4 h-9"
+                                        className="bg-[#ebdfbb] border border-black border-b-2 text-black hover:bg-[#a79968] transition-colors font-medium px-4 h-9"
                                     >
                                         Sign Up
                                     </Button>

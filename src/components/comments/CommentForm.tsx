@@ -22,7 +22,7 @@ export default function CommentForm({
     placeholder="Write your comment..."
     value={value}
     onChange={(e) => onChange(e.target.value)}
-    className="pr-10 pb-10 resize-none"
+    className="pr-10 pb-10 resize-none border - border-black - border-b-2"
   />
 
   <Button

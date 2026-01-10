@@ -95,8 +95,8 @@ await fetchPoll()
     totalVotes === 0 ? 0 : Math.round((votes / totalVotes) * 100)
 
   return (
-    <div className="pb-4 w-full max-w-xs bg-white pl-2">
-      <h3 className="text-sm font-semibold text-gray-400 mb-3">
+    <div className="pt-3 w-full max-w-xs bg-[#e8e0c3] pl-2">
+      <h3 className="text-sm font-semibold text-gray-700 mb-3">
         What do you think?
       </h3>
 
@@ -110,9 +110,9 @@ await fetchPoll()
     {pollResults.map((opt) => (
       <div key={opt.label} className="flex items-center gap-3">
         <div className="flex-1">
-          <div className="relative h-9 rounded-md bg-gray-100 overflow-hidden">
+          <div className="relative h-9 rounded-md bg-gray-100 border border-black overflow-hidden">
             <div
-              className="absolute left-0 top-0 h-full bg-linear-to-r from-violet-400 to-purple-500 opacity-80"
+              className="absolute left-0 top-0 h-full bg-linear-to-r bg-gray-300 opacity-80"
               style={{ width: `${percent(opt.votes)}%` }}
             />
 
@@ -141,8 +141,8 @@ await fetchPoll()
 </RadioGroup>
 
 
-      <div className="mt-3 text-sm text-gray-500">
-        <span className="inline-block rounded-full bg-gray-100 px-3 py-1 text-xs font-medium">
+      <div className="mt-1 text-sm text-gray-500">
+        <span className="inline-block rounded-full bg-[#e8e0c3] px-3 py-1 text-xs font-medium">
           {totalVotes} votes
         </span>
       </div>

@@ -66,7 +66,6 @@ export default function Page() {
         try {
           setIsLoading(true)
 
-          // ensure we have a real http(s) image URL - postSchema requires a valid URL
           if (!imageUrl || !(imageUrl.startsWith('http://') || imageUrl.startsWith('https://'))) {
             toast.error('Please upload a valid image before creating the post.')
             setIsLoading(false)
@@ -96,11 +95,10 @@ export default function Page() {
 
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
       const f = e.target.files?.[0]
+
       if (f) {
         setFile(f)
-        // show a temporary preview while uploading
         setImageUrl(URL.createObjectURL(f))
-        // upload immediately
         uploadImage(f)
       }
     }
@@ -123,14 +121,12 @@ export default function Page() {
           throw new Error(data?.message || 'Image upload failed')
         }
 
-        // API returns { data: { imageUrl, publicId } }
         setImageUrl(data.data?.imageUrl || '')
         setImagePublicId(data.data?.publicId || '')
         toast.success('Image uploaded')
       } catch (err) {
         console.error('Upload error', err)
         toast.error((err as Error).message || 'Image upload failed')
-        // clear preview if upload failed
         setImageUrl('')
         setImagePublicId('')
         setFile(null)
@@ -142,24 +138,24 @@ export default function Page() {
 
 
     return (
-      <div className="min-h-screen w-full bg-white flex items-start py-12 px-2 justify-center">
+      <div className="min-h-screen w-full bg-[#EFE9D5] flex items-start py-12 px-2 justify-center">
         <div className="w-full max-w-4xl">
-          <div className="bg-white border rounded-lg p-8 shadow-sm">
-            <h2 className="text-2xl font-semibold mb-4">Create Post</h2>
+          <div className="bg-[#e8e0c3] border border-black border-b-2 rounded-lg p-8 shadow-sm">
+            <h2 className="text-2xl font-bold mb-6">Create Post</h2>
 
             <div className="grid gap-6">
               <div>
-                <label className="block text-sm font-medium mb-2">Post Title</label>
-                <InputGroup>
-                  <InputGroupInput className="w-full" placeholder="Enter post title..." value={title} onChange={(e) => setTitle(e.target.value)} />
+                <label className="block text-sm font-bold mb-2">Post Title</label>
+                <InputGroup className='border border-black border-b-2'>
+                  <InputGroupInput className="w-full font-semibold" placeholder="Enter post title..." value={title} onChange={(e) => setTitle(e.target.value)} />
                   <InputGroupAddon align="inline-end">
                     <Tooltip>
                       <TooltipTrigger asChild>
-                        <InputGroupButton className="rounded-full" size="icon-xs">
+                        <InputGroupButton className="rounded-full hover:bg-[#a79968]" size="icon-xs">
                           <IconInfoCircle />
                         </InputGroupButton>
                       </TooltipTrigger>
-                      <TooltipContent>This is content in a tooltip.</TooltipContent>
+                      <TooltipContent className='font-semibold'>Be steady with your words.</TooltipContent>
                     </Tooltip>
                   </InputGroupAddon>
                 </InputGroup>
@@ -168,19 +164,19 @@ export default function Page() {
               <div>
                 <label className="block text-sm font-medium mb-2">Poll <p className='font-semibold opacity-30 inline ml-0.5'>(pre-defined)</p>
                 </label>
-                <div className="border rounded-md p-3 bg-gray-50">
+                <div className=" border border-black border-b-2 rounded-md p-3 bg-[#EFE9D5]">
                   <div className="grid grid-cols-3 gap-3">
-                    <Button variant="outline">Worth it</Button>
-                    <Button variant="outline">Not worth it</Button>
-                    <Button variant="outline">Maybe</Button>
+                    <Button variant="outline" className="font-bold bg-[#e8e0c3] hover:bg-[#e8e0c3] shadow-sm border-black border-b-2">Worth it</Button>
+                    <Button variant="outline" className="font-bold bg-[#e8e0c3] hover:bg-[#e8e0c3] shadow-sm border-black border-b-2">Not worth it</Button>
+                    <Button variant="outline" className="font-bold bg-[#e8e0c3] hover:bg-[#e8e0c3] shadow-sm border-black border-b-2">Maybe</Button>
                   </div>
                 </div>
               </div>
 
               <div>
-                <label className="block text-sm font-medium mb-2">Description</label>
-                <InputGroup>
-                  <InputGroupTextarea placeholder="Give a little description about this post..." className="w-full" value={description} onChange={(e) => setDescription(e.target.value)}/>
+                <label className="block text-sm font-bold mb-2">Description</label>
+                <InputGroup className='  border border-black border-b-2'>
+                  <InputGroupTextarea placeholder="Give a little description about this post..." className="w-full font-semibold rounded-md" value={description} onChange={(e) => setDescription(e.target.value)}/>
                     
                     {imageUrl && (
                     <div className="w-full mb-3 rounded-md overflow-hidden pl-4 pr-4">
@@ -190,7 +186,7 @@ export default function Page() {
                   <InputGroupAddon align="block-end">
                     <InputGroupButton
                       variant="outline"
-                      className="rounded-full"
+                      className="rounded-full border border-black border-b-2"
                       size="icon-xs"
                     >
                       <label className="flex items-center cursor-pointer">
@@ -200,7 +196,7 @@ export default function Page() {
                     </InputGroupButton>
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
-                        <InputGroupText>Upload Image</InputGroupText>
+                        <InputGroupText className='font-bold'>Upload Image</InputGroupText>
                       </DropdownMenuTrigger>
                     </DropdownMenu>
                     <Separator orientation="vertical" className="h-4!" />
@@ -209,14 +205,14 @@ export default function Page() {
                   
                 </InputGroup>
                 <div className='mt-4'>
-                    <label className="block text-sm font-medium mb-2">Category</label>
+                    <label className="block text-sm font-bold mb-2">Category</label>
                     <div className="flex items-start gap-4">
                       <DropdownMenu>
                         <DropdownMenuTrigger asChild>
-                          <Button variant="outline">Select Category</Button>
+                          <Button variant="outline" className='font-bold bg-[#EFE9D5] border border-black border-b-2 '>Select Category</Button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent className='w-56'>
-                          <DropdownMenuLabel>Select a Category</DropdownMenuLabel>
+                          <DropdownMenuLabel className='font-bold'>Select a Category</DropdownMenuLabel>
                           <DropdownMenuSeparator />
                           <DropdownMenuCheckboxItem checked={showProduct} onCheckedChange={setShowProduct}>Product</DropdownMenuCheckboxItem>
                           <DropdownMenuCheckboxItem checked={showSeries} onCheckedChange={setShowSeries}>Series</DropdownMenuCheckboxItem>
@@ -231,7 +227,7 @@ export default function Page() {
                       </DropdownMenu>
 
                       <div className="flex-1">
-                        <div className="border p-2 bg-white max-h-9 flex flex-wrap items-center gap-2">
+                        <div className="border border-black border-b-2 p-2 bg-[#EFE9D5] max-h-9 flex flex-wrap items-center gap-2 rounded-sm">
                           {showProduct && <span className="inline-flex items-center gap-2 px-1 py-0 bg-gray-200 text-sm">Product</span>}
                           {showSeries && <span className="inline-flex items-center gap-2 px-1 py-0 bg-gray-200 text-sm">Series</span>}
                           {showMovie && <span className="inline-flex items-center gap-2 px-1 py-0 bg-gray-200 text-sm">Movie</span>}
@@ -242,7 +238,7 @@ export default function Page() {
                           {showCelebrity && <span className="inline-flex items-center gap-2 px-1 py-0 bg-gray-200 text-sm">Celebrity</span>}
                           {showOther && <span className="inline-flex items-center gap-2 px-1 py-0 bg-gray-200 text-sm">Other</span>}
                           {!showProduct && !showSeries && !showMovie && !showApp && !showGame && !showSport && !showTechnology && !showCelebrity && !showOther && (
-                            <span className="text-sm text-gray-500">No categories selected</span>
+                            <span className="text-sm text-gray-500 font-semibold">No categories selected</span>
                           )}
                         </div>
                       </div>

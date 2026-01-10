@@ -125,10 +125,10 @@ export default function PostCard({ post }: { post?: Post }) {
   }
 
   return (
-    <article className="bg-white mt-4 rounded-2xl p-4 shadow-sm hover:shadow-md transition-shadow duration-300">
+    <article className="bg-[#e8e0c3] border border-black border-b-2 mt-4 rounded-2xl p-4 shadow-sm hover:shadow-md transition-shadow duration-300">
       {/* Header */}
       <header className="flex items-start gap-3">
-        <div className="w-6 h-6 mt-1.5 rounded-full bg-linear-to-tr from-sky-500 to-indigo-600 flex items-center justify-center text-white text-sm font-semibold shadow-sm shrink-0">
+        <div className="w-6 h-6 mt-1.5 rounded-full bg-black flex items-center justify-center text-white text-sm font-semibold shadow-sm shrink-0">
           {post?.createdBy?.username?.charAt(0).toUpperCase() ?? 'U'}
         </div>
         
@@ -193,7 +193,7 @@ export default function PostCard({ post }: { post?: Post }) {
       {/* Media */}
       {post?.imageUrl && (
         <div className="mt-3">
-          <div className="rounded-xl overflow-hidden border border-gray-200">
+          <div className="rounded-xl overflow-hidden border border-black border-b-2">
             <img
               src={post.imageUrl}
               alt="post media"
@@ -206,8 +206,8 @@ export default function PostCard({ post }: { post?: Post }) {
 
       {/* Poll Options */}
       {post?._id && (
-        <div className="mt-3">
-          <PollOption key={post._id} postId={post._id} pollRefreshIntervalMs={15000} />
+        <div className="mt-6">
+          <PollOption  key={post._id} postId={post._id} pollRefreshIntervalMs={15000} />
         </div>
       )}
 
@@ -223,7 +223,7 @@ export default function PostCard({ post }: { post?: Post }) {
         </Button>
 
         {post?.category && (
-          <p className="text-xs text-gray-500 font-medium">
+          <p className="text-xs text-gray-600 font-semibold">
             <span className="text-gray-400">Category:</span> {post.category}
           </p>
         )}
