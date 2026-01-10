@@ -7,7 +7,7 @@ import { postSchema } from "@/schemas/post.schema";
 import { z } from "zod";
 import mongoose from "mongoose";
 import CommentModel from "@/model/comment.model";
-
+import UserModel from "@/model/user.model";
 
 export async function POST(request: Request) {
     await dbConnect()
@@ -79,6 +79,7 @@ export async function GET(request: Request) {
 
     const url = new URL(request.url)
     const mine = url.searchParams.get('mine') === 'true'
+    const username = url.searchParams.get('username')
 
     try {
 
@@ -104,6 +105,28 @@ export async function GET(request: Request) {
             }, { 
                 status: 200 
             })
+        }
+
+        if (username) {
+            const user = await UserModel.findOne({ username: username.trim() }).lean()
+            if (!user) {
+                return Response.json({
+                    success: true,
+                    message: "Posts fetched successfully",
+                    data: []
+                }, { status: 200 })
+            }
+            const postsByUser = await PostModel
+                .find({ createdBy: user._id })
+                .populate("createdBy", "_id username imageUrl")
+                .sort({ createdAt: -1 })
+                .lean()
+
+            return Response.json({
+                success: true,
+                message: "Posts fetched successfully",
+                data: postsByUser
+            }, { status: 200 })
         }
 
         const posts = await PostModel

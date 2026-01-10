@@ -12,8 +12,8 @@ export default function ProfileClient({ username }: { username: string }) {
   const [loading, setLoading] = useState<boolean>(true)
 
 const { data: session } = useSession()
-    const user = session?.user 
-    //const router = useRouter()
+  const user = session?.user 
+  const router = useRouter()
 
   useEffect(() => {
     let mounted = true
@@ -21,7 +21,7 @@ const { data: session } = useSession()
       try {
         setLoading(true)
         const encoded = encodeURIComponent(username)
-        let res = await axios.get(`/api/posts/username=${encoded}`)
+        let res = await axios.get(`/api/posts?username=${encoded}`)
         if (!mounted) return
 
         if (res.status === 200 && res.data?.success) {
@@ -93,9 +93,16 @@ const { data: session } = useSession()
             </div>
           ) : posts && posts.length > 0 ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-              {posts.map((p) => (
-                <PostCard key={p._id} post={p} />
-              ))}
+                {posts.map((p) => (
+                  <div
+                    key={p._id}
+                    className="cursor-pointer"
+                    onClick={() => router.push(`/comments/${p._id}`)}
+                    role="link"
+                  >
+                    <PostCard post={p} />
+                  </div>
+                ))}
             </div>
           ) : (
             <div className="text-center py-16 space-y-2">

@@ -37,12 +37,12 @@ export default function RootLayout({
       >
         <AuthProvider>
           <Navbar />
-          <SidebarProvider defaultOpen={true}>
-            <AppSidebar />
-                <div className="p-2">
+          <SidebarProvider  className="bg-[#EFE9D5] border border-b-black"  defaultOpen={true}>
+            <AppSidebar  />
+                <div className="p-2 bg-[#EFE9D5]">
     <SidebarTrigger />
   </div>
-              <SidebarInset className="pt-[var(--navbar-height)] flex-1 overflow-auto">
+              <SidebarInset className="pt-(--navbar-height)  flex-1 overflow-auto">
                 {children}
               </SidebarInset>
             <Toaster />

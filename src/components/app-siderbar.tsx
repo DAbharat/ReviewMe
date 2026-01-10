@@ -88,10 +88,10 @@ export function AppSidebar() {
 
 
   return (
-    <Sidebar collapsible="icon"  >
-      <SidebarHeader />
+    <Sidebar collapsible="icon">
+      <SidebarHeader className="bg-[#EFE9D5]" />
 
-      <SidebarContent >
+      <SidebarContent className="bg-[#EFE9D5] border border-amber-900" >
 
         <SidebarGroup>
           <SidebarGroupLabel>General</SidebarGroupLabel>
@@ -99,7 +99,7 @@ export function AppSidebar() {
             <SidebarMenu className="text-black">
               {items.map((item) => (
                 <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton asChild>
+                  <SidebarMenuButton asChild className=" hover:bg-[#d4caa4] font-semibold">
                     <a href={item.url} className="flex items-center gap-2">
                       <item.icon />
                       <span>{item.title}</span>
@@ -117,7 +117,7 @@ export function AppSidebar() {
             <SidebarMenu className="text-black">
               {helpActions.map((helpAction) => (
                 <SidebarMenuItem key={helpAction.title}>
-                  <SidebarMenuButton asChild>
+                  <SidebarMenuButton asChild className=" hover:bg-[#d4caa4] font-semibold">
                     <a href={helpAction.url} className="flex items-center gap-2">
                       <helpAction.icon />
                       <span>{helpAction.title}</span>
@@ -134,25 +134,25 @@ export function AppSidebar() {
             <SidebarMenuItem className="w-full">
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <SidebarMenuButton className="w-full flex items-center gap-3 rounded-md bg-gray-200 hover:bg-gray-300 px-3 py-2 text-black">
+                  <SidebarMenuButton className="w-full flex items-center gap-3 rounded-md bg-[#e9ddb3] hover:bg-[#a79968] border border-amber-900 px-3 py-2 text-black">
                     <User />
-                    <span className="flex-1 text-left">Username</span>
+                    <span className="flex-1 text-left font-semibold">{session?.user?.username || "User"}</span>
                     <ChevronUp className="ml-2" />
                   </SidebarMenuButton>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent side="top" sideOffset={8} className="w-48 rounded-lg bg-white p-2">
+                <DropdownMenuContent side="top" sideOffset={8} className="w-48 rounded-lg bg-[#EFE9D5] border border-amber-900 p-2 ">
                   <DropdownMenuItem
                     onClick={handleProfile}
-                    className="w-full px-3 py-2 text-sm cursor-pointer"
+                    className="bg-[#EFE9D5] hover:bg-[#d4caa4] w-full px-3 py-2 text-sm cursor-pointer font-semibold"
                   >
                     Profile
                   </DropdownMenuItem>
 
-                  <DropdownMenuSeparator />
+                  <DropdownMenuSeparator className="text-amber-900 font-bold" />
 
                   <DropdownMenuItem
                     onClick={handleSignoutClick}
-                    className="w-full px-3 py-2 text-sm text-red-600 cursor-pointer"
+                    className="bg-[#EFE9D5] hover:bg-[#d4caa4] w-full px-3 py-2 text-sm text-red-600 font-semibold cursor-pointer"
                   >
                     Sign out
                   </DropdownMenuItem>

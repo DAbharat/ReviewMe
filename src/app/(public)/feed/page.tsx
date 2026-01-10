@@ -42,8 +42,8 @@ export default function page() {
   }, [])
 
   return (
-    <main className="min-h-screen py-6">
-      <div className="mx-auto w-full ml-10 max-w-375 px-6 grid grid-cols-1 lg:grid-cols-[1fr_220px] gap-6">
+    <main className="min-h-screen bg-[#EFE9D5] py-6">
+      <div className="mx-auto w-full bg-[#EFE9D5] ml-10 max-w-375 px-6 grid grid-cols-1 lg:grid-cols-[1fr_220px] gap-6">
         <section className="w-full">
           <h2 className="sr-only">Feed</h2>
 

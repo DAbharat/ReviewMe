@@ -15,7 +15,7 @@ export default function Navbar() {
     const router = useRouter()
 
     return (
-        <nav className="fixed top-0 left-0 right-0 z-50 bg-[#BBC7A4] border-b-2 border-black/20 shadow-sm">
+        <nav className="fixed top-0 left-0 right-0 z-50 bg-[#EFE9D5] border-b-2 border-black/20 shadow-sm">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="flex items-center justify-between h-16">
                     <div className="flex items-center">
