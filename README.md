@@ -1,4 +1,4 @@
-# ProdFeed
+# ReviewMe
 
 > A lightweight social feed for product/media discussions — built with Next.js, Tailwind CSS and MongoDB.
 
