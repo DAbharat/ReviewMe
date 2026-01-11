@@ -5,15 +5,15 @@ import VoteModel from '@/model/vote.model'
 import mongoose from 'mongoose'
 import { getServerSession } from 'next-auth'
 
-export async function GET(request: Request, { params }: { params: { postId: string } }) {
+export async function GET(request: Request, context: any) {
   await dbConnect()
   const session = await getServerSession(authOptions)
 
   let userVotedOption = null
 
-
-  const resolvedParams = await params as { postId: string }
-  const { postId } = resolvedParams
+  const rawParams = context?.params
+  const params = rawParams instanceof Promise ? await rawParams : rawParams
+  const { postId } = params
 
   if (session?.user?._id) {
     const vote = await VoteModel.findOne({

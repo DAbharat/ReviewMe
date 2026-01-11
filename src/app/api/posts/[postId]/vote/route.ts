@@ -8,13 +8,9 @@ import mongoose from "mongoose";
 import { voteSchema } from "@/schemas/vote.schema";
 import VoteModel from "@/model/vote.model";
 
-export async function POST(request: Request,
-    { params } : {
-        params: {
-            postId: string
-        }
-    }
-) {
+export async function POST(request: Request, context: any) {
+    const rawParams = context?.params
+    const params = rawParams instanceof Promise ? await rawParams : rawParams
     await dbConnect()
 
     const session = await getServerSession(authOptions)
@@ -30,7 +26,7 @@ export async function POST(request: Request,
     }
 
     const body = await request.json()
-    const { postId: paramPostId } = await params
+    const { postId: paramPostId } = params
 
     let postId = paramPostId
     const isValidParamId = mongoose.Types.ObjectId.isValid(postId)

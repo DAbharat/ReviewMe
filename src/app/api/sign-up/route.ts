@@ -2,7 +2,6 @@ import dbConnect from "@/lib/dbconnect";
 import UserModel from "@/model/user.model";
 import bcrypt from "bcryptjs";
 import { ApiResponse } from "@/types/ApiResponse";
-import { ApiError } from "next/dist/server/api-utils";
 
 
 export async function POST(request: Request) {
@@ -14,7 +13,8 @@ export async function POST(request: Request) {
         const existingUserVerifiedUsingUsername = await UserModel.findOne({ username })
 
         if (existingUserVerifiedUsingUsername) {
-            return new ApiError(401, "Username is already taken.")
+            const error: ApiResponse = { success: false, message: "Username is already taken.", data: null }
+            return Response.json(error, { status: 401 })
         }
 
         const existingUserVerifiedUsingEmail = await UserModel.findOne({
@@ -22,7 +22,8 @@ export async function POST(request: Request) {
         })
 
         if (existingUserVerifiedUsingEmail) {
-            return new ApiError(400, "User with this email already exists.")
+            const error: ApiResponse = { success: false, message: "User with this email already exists.", data: null }
+            return Response.json(error, { status: 400 })
         }
 
         const hashedPassword = await bcrypt.hash(password, 10)
@@ -36,13 +37,15 @@ export async function POST(request: Request) {
 
         const response: ApiResponse = {
             success: true,
-            message: "User registered successfully"
+            message: "User registered successfully",
+            data: null
         }
         return Response.json(response, { status: 200 })
 
 
     } catch (error) {
         console.error("Sign Up Error:", error)
-        return new ApiError(500, "Internal Server Error")
+        const err: ApiResponse = { success: false, message: "Internal Server Error", data: null }
+        return Response.json(err, { status: 500 })
     }
 }

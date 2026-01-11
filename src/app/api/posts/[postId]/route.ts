@@ -183,7 +183,7 @@ export async function PUT(request: Request) {
         const titleErrors = tree.properties?.title?.errors || [];
         const imageErrors = tree.properties?.imageUrl?.errors || [];
         const imageIdErrors = tree.properties?.imagePublicId?.errors || [];
-        const categoryErrors = tree.properties?.category?.errors || [];
+        const categoryErrors = tree.properties?.categories?.errors || [];
         const message = [...titleErrors, ...imageErrors, ...imageIdErrors, ...categoryErrors].join(", ") || "Validation failed";
 
         return Response.json({
@@ -195,7 +195,7 @@ export async function PUT(request: Request) {
         })
     }
 
-    const { title, description, imageUrl, imagePublicId, category } = parsed.data
+    const { title, description, imageUrl, imagePublicId, categories } = parsed.data
 
     try {
 
@@ -227,8 +227,8 @@ export async function PUT(request: Request) {
             post.description = description?.trim()
         }
 
-        if (category?.trim()) {
-            post.category = category
+        if (categories?.length) {
+            post.categories = categories
         }
 
         if (imageUrl && imagePublicId) {
