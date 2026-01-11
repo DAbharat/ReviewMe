@@ -9,7 +9,7 @@ import useComments from '@/components/comments/useComments'
 
 export default function Page() {
   const [content, setContent] = useState('')
-const [isLoading, setIsLoading] = useState(false)
+  const [isLoading, setIsLoading] = useState(false)
 
   const routeParams = useParams()
   const rawPostId = routeParams?.postId
@@ -18,18 +18,18 @@ const [isLoading, setIsLoading] = useState(false)
   const [loading, setLoading] = useState(true)
 
   const {
-          comments,
-          createComment,
-          updateComment,
-          deleteComment,
-      } = useComments(postId!)
+    comments,
+    createComment,
+    updateComment,
+    deleteComment,
+  } = useComments(postId!)
 
   useEffect(() => {
     let mounted = true
 
     const fetchPost = async () => {
+
       if (!postId) {
-        // If postId isn't available yet, stop and show empty state.
         if (mounted) {
           setPost(null)
           setLoading(false)
@@ -68,12 +68,21 @@ const [isLoading, setIsLoading] = useState(false)
               <CommentForm
                 value={content}
                 onChange={setContent}
-                onSubmit={() => createComment(content)}
+                onSubmit={async () => {
+                  await createComment(content)
+                  setContent("")
+                }}
                 isLoading={isLoading}
-            />
+              />
+
 
               <div className="mt-4 ml-1.5"> Comments
-                <CommentPage postId={postId!} />
+                <CommentPage
+                  comments={comments}
+                  onUpdate={updateComment}
+                  onDelete={deleteComment}
+                />
+
               </div>
             </div>
           ) : (

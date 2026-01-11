@@ -36,7 +36,7 @@ export default function Navbar() {
                                         <Button
                                             variant="outline"
                                             size="sm"
-                                            className="border-2 border-black border-b-3 bg-[#EFE9D5] text-[#0f2430] hover:bg-[#a79968] hover:text-white transition-colors h-9 w-9 p-0"
+                                            className="border-2 border-black border-b-3 bg-[#EFE9D5] text-[#0f2430] hover:bg-[#a79968] transition-colors h-9 w-9 p-0"
                                             onClick={() => profileSlug && router.push(`/profile/${profileSlug}`)}
                                             aria-label="Open profile"
                                         >
@@ -47,7 +47,7 @@ export default function Navbar() {
                                 <Button
                                     variant="outline"
                                     size="sm"
-                                    className="border-2 border-black border-b-3 bg-[#EFE9D5] text-[#0f2430] hover:bg-[#a79968] hover:text-white transition-colors font-medium px-4 h-9"
+                                    className="border-2 border-black border-b-3 bg-[#EFE9D5] text-[#0f2430] hover:bg-[#a79968] transition-colors font-medium px-4 h-9"
                                     onClick={() => router.push(`/post/create`)}
                                 >
                                     Create Post

@@ -12,7 +12,7 @@ export interface Post extends Document {
     description : string,
     imageUrl : string,
     imagePublicId: string,
-    category : string,
+    categories : string[],
     poll : PollOption[],
     commentCount: number,
     createdBy: Types.ObjectId,
@@ -48,12 +48,12 @@ const PostSchema: Schema<Post> = new Schema({
     imagePublicId: {
         type: String,
     },
-    category: {
-        type: String,
+    categories: {
+        type: [String],
         enum: [
             "Product", "Series", "Movie", "App", "Game", "Sport","Technology","Celebrity","Other"
         ],
-        default: "Other",
+        default: ["Other"],
         index: true
     },
     poll: {

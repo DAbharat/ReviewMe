@@ -33,7 +33,7 @@ export async function POST(request: Request) {
         const descriptionErrors = tree.properties?.description?.errors || [];
         const imageErrors = tree.properties?.imageUrl?.errors || [];
         const imageIdErrors = tree.properties?.imagePublicId?.errors || [];
-        const categoryErrors = tree.properties?.category?.errors || [];
+        const categoryErrors = tree.properties?.categories?.errors || [];
         const message = [...titleErrors, ...descriptionErrors, ...imageErrors, ...imageIdErrors, ...categoryErrors].join(", ") || "Validation failed";
         return Response.json({
             success: false,
@@ -44,7 +44,7 @@ export async function POST(request: Request) {
         })
     }
 
-    const { title, description, imageUrl, imagePublicId, category } = parsed.data
+    const { title, description, imageUrl, imagePublicId, categories } = parsed.data
 
     try {
         const newPost = await PostModel.create({
@@ -52,7 +52,7 @@ export async function POST(request: Request) {
             description: description?.trim(),
             imageUrl,
             imagePublicId: imagePublicId?.trim(),
-            category,
+            categories: categories && categories.length ? categories : ["Other"],
             createdBy: new mongoose.Types.ObjectId(user._id)
         })
 

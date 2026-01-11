@@ -14,6 +14,7 @@ import { Field, FieldError, FieldGroup, FieldLabel, FieldContent } from "../ui/f
 import { Input } from "../ui/input"
 import { Spinner } from "../ui/spinner"
 import { Button } from "../ui/button"
+import { HoverCard, HoverCardTrigger } from "../ui/hover-card"
 
 
 export default function SignUpForm() {
@@ -73,15 +74,15 @@ export default function SignUpForm() {
     }
 
     return (
-        <div className="min-h-screen flex flex-col items-center justify-start bg-[#BBC7A4] py-8">
+        <div className="min-h-screen flex flex-col items-center justify-start bg-[#EFE9D5] py-8">
             <header className="text-center mb-8">
                 <h1 className="text-4xl md:text-5xl font-extrabold text-[#0f2430]">Welcome to ReviewMe</h1>
-                <p className="mt-4 text-md text-[#415a57]">To continue, fill out your personal info</p>
+                <p className="mt-4 text-md text-gray-500 font-semibold">To continue, fill out your personal info</p>
             </header>
 
-            <div className="w-full max-w-lg bg-[#F2F5EA] border-2 border-black rounded-2xl shadow-md p-6">
+            <div className="w-full max-w-lg bg-white border border-black border-b-2 rounded-2xl shadow-md p-6">
                 <h2 className="text-3xl font-bold text-[#0f2430] mb-4 text-center">Create your account</h2>
-                <p className="text-center text-sm text-[#6b8b84] mb-6">Choose a username and enter your email and password.</p>
+                <p className="text-center text-sm text-gray-500 mb-6">Choose a username and enter your email and password.</p>
                 <form onSubmit={form.handleSubmit(onSubmit)}>
                     <FieldGroup>
 
@@ -96,7 +97,9 @@ export default function SignUpForm() {
                                             id={field.name}
                                             {...field}
                                             aria-invalid={fieldState.invalid}
-                                            placeholder="Name" />
+                                            placeholder="Username" 
+                                            className="border border-black border-b-2 placeholder:text-gray-400 font-semibold"
+                                            />
                                         {isUsernameValid && <Spinner />}
                                         <p className={`text-sm ml-1.5 ${usernameMessage === "Username is available" ? "text-green-600" : "text-red-600"}`}>{usernameMessage}</p>
                                         {/* {!isUsernameValid && usernameMessage && (
@@ -121,9 +124,9 @@ export default function SignUpForm() {
                                             id={field.name}
                                             type="email"
                                             {...field}
-                                            aria-invalid={fieldState.invalid}
+                                            aria-invalid={fieldState.invalid} 
                                             placeholder="Email"
-                                            className="border border-[#cfe8e1] focus:border-[#2f6b61] rounded-md px-4 py-3 placeholder:text-[#9bbdb6]"
+                                            className="border-black border-b-2 font-semibold rounded-md px-4 py-3 placeholder:text-gray-400"
                                         />
                                         {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
                                     </FieldContent>
@@ -144,7 +147,7 @@ export default function SignUpForm() {
                                             {...field}
                                             aria-invalid={fieldState.invalid}
                                             placeholder="Password"
-                                            className="border border-[#cfe8e1] focus:border-[#2f6b61] rounded-md px-4 py-3 placeholder:text-[#9bbdb6]"
+                                            className="border border-black border-b-2 font-semibold rounded-md px-4 py-3 placeholder:text-gray-400"
                                         />
                                         {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
                                     </FieldContent>
@@ -153,20 +156,27 @@ export default function SignUpForm() {
                         />
                     </FieldGroup>
 
-                    <div className="mt-4">
-                        <p className="text-sm text-[#6b8b84] mb-3">Password must be at least 8 characters and contain uppercase, lowercase, and numbers</p>
+                    <div className="mt-3">
+                        <p className="text-sm text-black mb-3 opacity-40 ml-1">Password must be at least 6 characters.</p>
                         <Button
                             aria-label="submit"
                             disabled={isSubmitting || isUsernameValid}
-                            className="w-md rounded-md bg-[#44786f] hover:bg-[#315951] text-white font-semibold py-3 border-2 disabled:opacity-60"
+                            className="w-md rounded-md bg-white hover:bg-gray-200 text-black font-semibold py-3 border border-black border-b-2 disabled:opacity-60 mt-3"
                         >
                             {isSubmitting ? "Signing Up..." : "Sign Up"}
                         </Button>
                     </div>
 
                     <div className="mt-6 text-center text-sm">
-                        <span className="text-[#375b57]">Already have an account? </span>
-                        <Link href="/sign-in" className="text-[#6aa05f] font-medium">Sign in</Link>
+                        <span className="text-gray-400 font-semibold ml-2">Already have an account? </span>
+                        <HoverCard>
+                            <HoverCardTrigger asChild>
+                                <Button variant="link" className="bg-white mr-2">
+    <Link href="/sign-in" className="text-black font-medium mr-2">Sign in</Link>
+</Button>
+                            </HoverCardTrigger>
+
+                        </HoverCard>
                     </div>
                 </form>
             </div>

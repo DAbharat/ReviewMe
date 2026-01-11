@@ -68,6 +68,11 @@ export async function POST(request: Request,
       content: content.trim()
     })
 
+    const populatedComment = await createComment.populate(
+  "userId",
+  "username _id imageUrl"
+)
+
     await PostModel.updateOne(
       {
         _id: postId
@@ -82,7 +87,7 @@ export async function POST(request: Request,
     return Response.json({
       success: true,
       message: "Comment created successfully",
-      data: createComment
+      data: populatedComment
     }, {
       status: 200
     })

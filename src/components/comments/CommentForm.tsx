@@ -16,24 +16,34 @@ export default function CommentForm({
   onSubmit: () => void
   isLoading: boolean
 }) {
+  const handleSubmit = () => {
+    if (isLoading || !value.trim()) return
+    onSubmit()
+  }
   return (
     <div className="relative w-full">
-  <Textarea
-    placeholder="Write your comment..."
-    value={value}
-    onChange={(e) => onChange(e.target.value)}
-    className="pr-10 pb-10 resize-none border - border-black - border-b-2"
-  />
+      <Textarea
+        placeholder="Write your comment..."
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        onKeyDown={(e) => {
+          if (e.key === "Enter" && !e.shiftKey) {
+            e.preventDefault()
+            handleSubmit()
+          }
+        }}
+        className="pr-10 pb-10 resize-none border - border-black - border-b-2"
+      />
 
-  <Button
-    onClick={onSubmit}
-    disabled={isLoading || !value.trim()}
-    size="icon"
-    className="absolute bottom-5 right-3 h-8 w-8 rounded-full"
-  >
-    <ArrowUpIcon className="h-4 w-4" />
-  </Button>
-</div>
+      <Button
+        onClick={handleSubmit}
+        disabled={isLoading || !value.trim()}
+        size="icon"
+        className="absolute bottom-5 right-3 h-8 w-8 rounded-full"
+      >
+        <ArrowUpIcon className="h-4 w-4" />
+      </Button>
+    </div>
 
   )
 }

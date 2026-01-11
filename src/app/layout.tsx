@@ -5,7 +5,7 @@ import AuthProvider from "@/context/AuthProvider";
 import { Toaster } from "../components/ui/sonner";
 import Navbar from "@/components/layout/Navbar";
 import { SidebarProvider, SidebarTrigger, SidebarInset } from "@/components/ui/sidebar";
-import { AppSidebar } from "@/components/app-siderbar";
+import SidebarWrapper from "@/components/sidebar-wrapper";
 //import { AppSiderbar } from "@/components/app-sidebar";
 
 const geistSans = Geist({
@@ -37,14 +37,14 @@ export default function RootLayout({
       >
         <AuthProvider>
           <Navbar />
-          <SidebarProvider  className="bg-[#EFE9D5] border border-b-black"  defaultOpen={true}>
-            <AppSidebar  />
-                <div className="p-2 bg-[#EFE9D5]">
-    <SidebarTrigger />
-  </div>
-              <SidebarInset className="pt-(--navbar-height)  flex-1 overflow-auto">
-                {children}
-              </SidebarInset>
+          <SidebarProvider className="bg-[#EFE9D5] border border-b-black" defaultOpen={true}>
+            <SidebarWrapper />
+            <div className="p-2 bg-[#EFE9D5]">
+              <SidebarTrigger />
+            </div>
+            <SidebarInset className="pt-(--navbar-height)  flex-1 overflow-auto">
+              {children}
+            </SidebarInset>
             <Toaster />
           </SidebarProvider>
         </AuthProvider>

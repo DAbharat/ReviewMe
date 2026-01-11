@@ -36,10 +36,11 @@ export default function PostCard({ post }: { post?: Post }) {
   const [localCommentCount, setLocalCommentCount] = useState<number>(post?.commentCount ?? 0)
 
   const isOwner = Boolean(
-    session?.user?._id &&
-    post?.createdBy &&
-    String(session.user._id) === String(post.createdBy)
-  )
+  session?.user?._id &&
+  post?.createdBy?._id &&
+  String(session.user._id) === String(post.createdBy._id)
+)
+
 
   const handleDeleteClick = async (postId: string) => {
     if (!session) {
@@ -141,18 +142,18 @@ export default function PostCard({ post }: { post?: Post }) {
             <DropdownMenu open={menuOpen} onOpenChange={setMenuOpen}>
               <DropdownMenuTrigger asChild>
                 <Button variant="ghost" size="icon" aria-label="More Options"
-                  className="h-8 w-8 rounded-full hover:bg-gray-100 text-gray-500 shrink-0">
+                  className="h-8 w-8 rounded-full hover:bg-[#a79968] text-gray-500 shrink-0">
                   <MoreHorizontal className="w-4 h-4" />
                 </Button>
               </DropdownMenuTrigger>
 
-              <DropdownMenuContent align="end" className="w-48">
+              <DropdownMenuContent align="end" className="w-48 bg-[#EFE9D5] border border-amber-900">
                 {isOwner ? (
                   <>
                     <DropdownMenuItem
                       onClick={() => post?._id && updatePost(post._id)}
                       disabled={isLoading || !post?._id}
-                      className="flex items-center gap-2"
+                      className="flex items-center gap-2 font-bold cursor-pointer"
                     >
                       <PencilLine className="w-4 h-4" />
                       <span>Update Post</span>
@@ -161,14 +162,14 @@ export default function PostCard({ post }: { post?: Post }) {
                     <DropdownMenuItem
                       onClick={() => post?._id && handleDeleteClick(post._id)}
                       disabled={isLoading || !post?._id}
-                      className="flex items-center gap-2 text-red-600"
+                      className="flex items-center gap-2 text-red-600 font-bold cursor-pointer"
                     >
                       <Trash className="w-4 h-4" />
                       <span>Delete Post</span>
                     </DropdownMenuItem>
                   </>
                 ) : (
-                  <DropdownMenuItem className="text-red-500">
+                  <DropdownMenuItem className="text-red-500 font-bold cursor-pointer">
                     <Flag className="w-4 h-4" /> Report Post
                   </DropdownMenuItem>
                 )}
@@ -215,7 +216,7 @@ export default function PostCard({ post }: { post?: Post }) {
       <footer className="mt-3 flex items-center justify-between text-sm">
         <Button
           onClick={() => router.push(`/comments/${post?._id}`)}
-          className="flex items-center gap-1.5 text-gray-600 hover:text-gray-900 transition-colors px-0 h-auto"
+          className="flex items-center gap-1.5 text-black hover:bg-[#a79968]  transition-colors px-0 h-auto"
           variant="ghost"
         >
           <MessageCircle className="w-4 h-4" />
@@ -223,22 +224,22 @@ export default function PostCard({ post }: { post?: Post }) {
         </Button>
 
         {post?.category && (
-          <p className="text-xs text-gray-600 font-semibold">
+          <p className="text-sm text-gray-600 font-semibold">
             <span className="text-gray-400">Category:</span> {post.category}
           </p>
         )}
       </footer>
 
       <AlertDialog open={open} onOpenChange={setOpen}>
-        <AlertDialogContent>
+        <AlertDialogContent className='bg-[#EFE9D5] border border-amber-900'>
           <AlertDialogHeader>
-            <AlertDialogTitle>Delete post?</AlertDialogTitle>
-            <AlertDialogDescription>
+            <AlertDialogTitle className='font-bold'>Delete post?</AlertDialogTitle>
+            <AlertDialogDescription className='font-semibold '>
               This action cannot be undone.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel disabled={isLoading}>
+            <AlertDialogCancel className="border border-amber-900" disabled={isLoading}>
               Cancel
             </AlertDialogCancel>
             <AlertDialogAction

@@ -57,12 +57,12 @@ export default function CommentCard({
                       <PencilLine className="w-4 h-4 mr-2 " /> Edit
                     </DropdownMenuItem>
                     <DropdownMenuSeparator/>
-                    <DropdownMenuItem onClick={onDelete} className="text-red-600 font-bold cursor-pointer">
+                    <DropdownMenuItem onClick={onDelete} className="text-red-600 hover:bg-red-800 font-bold cursor-pointer">
                       <Trash className="w-4 h-4 mr-2" /> Delete
                     </DropdownMenuItem>
                   </>
                 ) : (
-                  <DropdownMenuItem onClick={onReport}>
+                  <DropdownMenuItem onClick={onReport} className='font-bold text-red-600 hover:bg-red-800 cursor-pointer'>
                     <Flag className="w-4 h-4 mr-2" /> Report
                   </DropdownMenuItem>
                 )}

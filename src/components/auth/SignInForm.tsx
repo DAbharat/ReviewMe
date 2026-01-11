@@ -12,6 +12,11 @@ import { Button } from "../ui/button"
 import { signinSchema } from "@/schemas/auth/signIn.schema"
 import { signIn } from "next-auth/react"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "../ui/dropdown-menu"
+import {
+  HoverCard,
+  HoverCardContent,
+  HoverCardTrigger,
+} from "@/components/ui/hover-card"
 
 
 
@@ -101,7 +106,7 @@ export default function SignInForm() {
                                                 <DropdownMenuItem className="font-semibold" onClick={() => setLoginType("email")}>
                                                     Email
                                                 </DropdownMenuItem>
-                                                <DropdownMenuItem onClick={() => setLoginType("username")}>
+                                                <DropdownMenuItem className="font-semibold" onClick={() => setLoginType("username")}>
                                                     Username
                                                 </DropdownMenuItem>
                                             </DropdownMenuContent>
@@ -139,7 +144,7 @@ export default function SignInForm() {
                         <Button
                             aria-label="submit"
                             disabled={isSubmitting}
-                            className="w-md rounded-md bg-white text-black font-semibold py-3 border border-black border-b-2 disabled:opacity-60"
+                            className="w-md rounded-md bg-white hover:bg-gray-200 text-black font-semibold py-3 border border-black border-b-2 disabled:opacity-60"
                         >
                             {isSubmitting ? "Signing In..." : "Sign In"}
                         </Button>
@@ -153,15 +158,22 @@ export default function SignInForm() {
                         <Button
                             aria-label="submit"
                             onClick={() => signIn("google", { callbackUrl: "/" })}
-                            className="w-full bg-white border border-black border-b-2 rounded-lg py-2 flex items-center justify-center gap-2 hover:bg-gray-50 transition text-black"
+                            className="w-full bg-white hover:bg-gray-200 border border-black border-b-2 rounded-lg py-2 flex items-center justify-center gap-2transition text-black"
                         >
                             Continue with Google
                         </Button>
                     </div>
 
-                    <div className="mt-6 text-center text-sm">
-                        <span className="text-[#375b57]">New to ReviewMe? </span>
-                        <Link href="/sign-up" className="text-[#6aa05f] font-medium">Sign up</Link>
+                    <div className="mt-8 text-center text-sm">
+                        <span className="text-gray-400 font-semibold ml-2">New to ReviewMe? </span><HoverCard>
+                            <HoverCardTrigger asChild>
+                                <Button variant="link" className="bg-white mr-2">
+    <Link href="/sign-up" className="text-black font-medium mr-2">Sign up</Link>
+</Button>
+                            </HoverCardTrigger>
+
+                        </HoverCard>
+                        
                     </div>
                 </form>
             </div>

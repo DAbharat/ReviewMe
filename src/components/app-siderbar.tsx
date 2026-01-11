@@ -134,7 +134,7 @@ const helpActions = [
             <SidebarMenuItem className="w-full">
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <SidebarMenuButton className="w-full flex items-center gap-3 rounded-md bg-[#e9ddb3] hover:bg-[#a79968] border border-amber-900 px-3 py-2 text-black">
+                  <SidebarMenuButton className="w-full flex items-center gap-3 cursor-pointer rounded-md bg-[#e9ddb3] hover:bg-[#a79968] border border-amber-900 px-3 py-2 text-black">
                     <User />
                     <span className="flex-1 text-left font-semibold">{session?.user?.username || "User"}</span>
                     <ChevronUp className="ml-2" />
@@ -173,7 +173,7 @@ const helpActions = [
             </AlertDialogHeader>
             <AlertDialogFooter>
               <AlertDialogCancel className="border border-amber-900">Cancel</AlertDialogCancel>
-              <AlertDialogAction onClick={confirmSignout} className="text-white bg-red-600">
+              <AlertDialogAction onClick={confirmSignout} className="text-white bg-red-600 hover:bg-red-800">
                 Continue
               </AlertDialogAction>
             </AlertDialogFooter>
