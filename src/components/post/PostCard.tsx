@@ -20,7 +20,7 @@ export type Post = {
   description?: string;
   imageUrl?: string;
   commentCount?: number;
-  category?: string
+  categories?: string[];
 };
 
 export default function PostCard({ post }: { post?: Post }) {
@@ -223,9 +223,9 @@ export default function PostCard({ post }: { post?: Post }) {
           <span className="font-medium text-sm">{localCommentCount}</span>
         </Button>
 
-        {post?.category && (
+        {post?.categories && post.categories.length > 0 && (
           <p className="text-sm text-gray-600 font-semibold">
-            <span className="text-gray-400">Category:</span> {post.category}
+            <span className="text-gray-400">Category:</span> {post.categories.join(', ')}
           </p>
         )}
       </footer>

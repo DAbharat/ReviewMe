@@ -82,7 +82,7 @@ export default function PollOption({
           setHasVoted(true)
 await fetchPoll()
     } catch (error) {
-      toast.error('Vote failed, refreshing…')
+      toast.error('Vote failed, try after sometime')
       setHasVoted(false)
       setSelectedOption(null)
       fetchPoll()

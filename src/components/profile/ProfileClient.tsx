@@ -77,7 +77,7 @@ export default function ProfileClient({ username }: { username: string }) {
                   <span className='text-gray-700 mb-1 font-semibold'>Posts</span>
                 </div>
                 <span className=" text-gray-700 font-semibold">•</span>
-                <span className=" text-gray-700 font-semibold">Member since 2023</span>
+                <span className=" text-gray-700 font-semibold">Member since 2025</span>
               </div>
             </div>
           </div>
