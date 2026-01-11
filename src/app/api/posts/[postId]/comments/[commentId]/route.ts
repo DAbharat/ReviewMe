@@ -9,10 +9,9 @@ import { updateCommentSchema } from "@/schemas/updateComment.schema";
 import z from "zod";
 
 
-export async function GET(
-  request: Request,
-  { params }: { params: { postId: string } }
-) {
+export async function GET(request: Request, context: any) {
+    const rawParams = context?.params
+    const params = rawParams instanceof Promise ? await rawParams : rawParams
   await dbConnect();
 
   const sessionAuth = await getServerSession(authOptions);
@@ -28,7 +27,7 @@ export async function GET(
   }
 
   try {
-    const comments = await CommentModel.find({ postId: params.postId })
+        const comments = await CommentModel.find({ postId: params.postId })
       .populate("userId", "username _id")
       .sort({ createdAt: -1 })
       .lean();
@@ -52,17 +51,9 @@ export async function GET(
 }
 
 
-export async function DELETE(
-    request: Request,
-    {
-        params,
-    }: {
-        params: {
-            postId: string;
-            commentId: string;
-        };
-    }
-) {
+export async function DELETE(request: Request, context: any) {
+    const rawParams = context?.params
+    const params = rawParams instanceof Promise ? await rawParams : rawParams
     await dbConnect();
 
     const sessionAuth = await getServerSession(authOptions);
@@ -78,7 +69,7 @@ export async function DELETE(
     }
 
 
-    const { postId, commentId } = await params;
+    const { postId, commentId } = params;
     const isValidPostId = mongoose.Types.ObjectId.isValid(postId)
     const isValidCommentId = mongoose.Types.ObjectId.isValid(commentId)
 
@@ -145,16 +136,9 @@ export async function DELETE(
     }
 }
 
-export async function PUT(request: Request,
-    {
-        params,
-    }: {
-        params: {
-            postId: string;
-            commentId: string;
-        };
-    }
-) {
+export async function PUT(request: Request, context: any) {
+    const rawParams = context?.params
+    const params = rawParams instanceof Promise ? await rawParams : rawParams
     await dbConnect()
 
     const sessionAuth = await getServerSession(authOptions)
