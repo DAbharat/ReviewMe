@@ -20,12 +20,27 @@ async function dbConnect() {
     return cached.conn
   }
 
-  if (!cached.promise) {
-    cached.promise = mongoose.connect(process.env.MONGODB_URI!)
+  if (!process.env.MONGODB_URI) {
+    const msg = "MONGODB_URI is not set in environment"
+    console.error(msg)
+    throw new Error(msg)
   }
 
-  cached.conn = await cached.promise
-  console.log("DB connected successfully!")
+  if (!cached.promise) {
+    cached.promise = mongoose.connect(process.env.MONGODB_URI as string)
+      .catch((err) => {
+        console.error("Initial mongoose.connect failed:", err)
+        throw err
+      })
+  }
+
+  try {
+    cached.conn = await cached.promise
+    console.log("DB connected successfully!")
+  } catch (err) {
+    console.error("DB connection error:", err)
+    throw err
+  }
 
   return cached.conn
 }
