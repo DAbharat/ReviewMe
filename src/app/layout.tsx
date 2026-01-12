@@ -36,11 +36,12 @@ export default function RootLayout({
         style={{ ["--navbar-height"]: "3rem" } as React.CSSProperties}
       >
         <AuthProvider>
-          <Navbar />
+          
           <SidebarProvider className="bg-[#EFE9D5] border border-b-black" defaultOpen={true}>
+            <Navbar />
             <SidebarWrapper />
             <div className="p-2 bg-[#EFE9D5]">
-              <SidebarTrigger />
+              {/* <SidebarTrigger /> */}
             </div>
             <SidebarInset className="pt-(--navbar-height)  flex-1 overflow-auto">
               {children}

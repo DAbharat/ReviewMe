@@ -4,6 +4,7 @@ import Link from 'next/link'
 import { useSession, signOut } from 'next-auth/react'
 
 import { Button } from '../ui/button'
+import { SidebarTrigger } from '../ui/sidebar'
 import router, { useRouter } from "next/navigation"
 import { User } from 'lucide-react'
 
@@ -19,6 +20,9 @@ export default function Navbar() {
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="flex items-center justify-between h-16">
                     <div className="flex items-center">
+                        <div className="mr-2 md:hidden">
+                            <SidebarTrigger />
+                        </div>
                         <Link href="/" className="flex items-center">
                             <span className="font-bold text-xl text-[#0f2430] tracking-tight">ReviewMe</span>
                         </Link>

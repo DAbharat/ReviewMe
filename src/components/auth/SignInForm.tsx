@@ -68,16 +68,16 @@ export default function SignInForm() {
 
     return (
         <div className="min-h-screen flex flex-col items-center justify-start bg-[#EFE9D5] py-8">
-            <header className="text-center mb-8">
-                <h1 className="text-4xl md:text-5xl font-extrabold text-[#0f2430]">Welcome to ReviewMe</h1>
+            <header className="text-center mb-8 px-4">
+                <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-[#0f2430]">Welcome to ReviewMe</h1>
                 <p className="mt-4 text-md text-gray-500 font-semibold">To continue, fill out your personal info</p>
             </header>
-            <div className="w-full max-w-lg bg-white border-2 border-black border-b-3 rounded-2xl shadow-md p-6">
-                <h2 className="text-3xl font-bold text-[#0f2430] mb-4 text-center">Sign in to your account</h2>
-                <p className="text-center text-sm text-[#6b8b84] mb-6">Enter your credentials or sign in via Google</p>
+            <div className="w-full max-w-md sm:max-w-lg md:max-w-xl bg-white border-2 border-black rounded-2xl shadow-md p-4 sm:p-6 mx-4">
+                <h2 className="text-2xl sm:text-3xl font-bold text-[#0f2430] mb-4 text-center">Sign in to your account</h2>
+                <p className="text-center text-sm sm:text-base text-[#6b8b84] mb-6">Enter your credentials or sign in via Google</p>
                 <form onSubmit={form.handleSubmit(onSubmit)}>
 
-                    <FieldGroup>
+                    <FieldGroup className="space-y-4">
 
                         <Controller
                             control={form.control}
@@ -89,7 +89,7 @@ export default function SignInForm() {
                                             {...field}
                                             type={loginType === "email" ? "email" : "text"}
                                             placeholder={loginType === "email" ? "Email" : "Username"}
-                                            className="pr-12 border font-semibold placeholder:text-gray-400 border-black border-b-2"
+                                            className="w-full pr-12 border font-semibold placeholder:text-gray-400 border-black border-b-2"
                                         />
 
                                         <DropdownMenu>
@@ -131,7 +131,7 @@ export default function SignInForm() {
                                             {...field}
                                             aria-invalid={fieldState.invalid}
                                             placeholder="Password"
-                                            className="border border-black border-b-2 rounded-md px-4 py-3 font-semibold placeholder:text-gray-400"
+                                            className="w-full border border-black border-b-2 rounded-md px-4 py-3 font-semibold placeholder:text-gray-400"
                                         />
                                         {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
                                     </FieldContent>
@@ -144,7 +144,7 @@ export default function SignInForm() {
                         <Button
                             aria-label="submit"
                             disabled={isSubmitting}
-                            className="w-md rounded-md bg-white hover:bg-gray-200 text-black font-semibold py-3 border border-black border-b-2 disabled:opacity-60"
+                            className="w-full sm:w-auto md:w-full rounded-md bg-white hover:bg-gray-200 text-black font-semibold py-3 border border-black border-b-2 disabled:opacity-60"
                         >
                             {isSubmitting ? "Signing In..." : "Sign In"}
                         </Button>
@@ -158,7 +158,7 @@ export default function SignInForm() {
                         <Button
                             aria-label="submit"
                             onClick={() => signIn("google", { callbackUrl: "/" })}
-                            className="w-full bg-white hover:bg-gray-200 border border-black border-b-2 rounded-lg py-2 flex items-center justify-center gap-2transition text-black"
+                            className="w-full bg-white hover:bg-gray-200 border border-black border-b-2 rounded-lg py-2 flex items-center justify-center gap-2 transition text-black"
                         >
                             Continue with Google
                         </Button>
