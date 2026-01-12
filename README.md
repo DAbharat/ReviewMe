@@ -57,6 +57,10 @@ CLOUDINARY_CLOUD_NAME=your_cloud_name
 CLOUDINARY_API_KEY=your_api_key
 CLOUDINARY_API_SECRET=your_api_secret
 
+# Upstash Redis
+UPSTASH_REDIS_REST_URL=your_rest_url
+UPSTASH_REDIS_REST_TOKEN=your_rest_token
+
 # Optional: public cloud name for client-side usage
 NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME=your_cloud_name
 ```
