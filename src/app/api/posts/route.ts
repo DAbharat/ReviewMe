@@ -5,7 +5,7 @@ import PostModel from "@/model/post.model";
 import { User } from "next-auth";
 import { postSchema } from "@/schemas/post.schema";
 import { z } from "zod";
-import mongoose from "mongoose";
+import mongoose, { SortOrder } from "mongoose";
 import CommentModel from "@/model/comment.model";
 import UserModel from "@/model/user.model";
 
@@ -75,79 +75,70 @@ export async function POST(request: Request) {
 }
 
 export async function GET(request: Request) {
-    await dbConnect()
+  await dbConnect()
 
-    const url = new URL(request.url)
-    const mine = url.searchParams.get('mine') === 'true'
-    const username = url.searchParams.get('username')
+  const url = new URL(request.url)
 
-    try {
+  const mine = url.searchParams.get("mine") === "true"
+  const username = url.searchParams.get("username")?.trim()
+  const search = url.searchParams.get("search")?.trim()
 
-        if (mine) {
-            const session = await getServerSession(authOptions)
-            if (!session?.user?._id) {
-                return Response.json({ 
-                    success: false, 
-                    message: 'Not Authenticated' 
-                }, { 
-                    status: 401 
-                })
-            }
-            const posts = await PostModel.find({ createdBy: session.user._id })
-                .populate('createdBy', '_id username imageUrl')
-                .sort({ createdAt: -1 })
-                .lean()
+  const query: any = {}
 
-            return Response.json({ 
-                success: true, 
-                message: "User Posts fetched successfully",
-                data: posts 
-            }, { 
-                status: 200 
-            })
-        }
+  try {
 
-        if (username) {
-            const user = await UserModel.findOne({ username: username.trim() }).lean()
-            if (!user) {
-                return Response.json({
-                    success: true,
-                    message: "Posts fetched successfully",
-                    data: []
-                }, { status: 200 })
-            }
-            const postsByUser = await PostModel
-                .find({ createdBy: user._id })
-                .populate("createdBy", "_id username imageUrl")
-                .sort({ createdAt: -1 })
-                .lean()
-
-            return Response.json({
-                success: true,
-                message: "Posts fetched successfully",
-                data: postsByUser
-            }, { status: 200 })
-        }
-
-        const posts = await PostModel
-            .find({})
-            .populate("createdBy", "_id username imageUrl")
-            .sort({ createdAt: -1 })
-            .lean()
-
-        return Response.json({
-            success: true,
-            message: "Posts fetched successfully",
-            data: posts
-        }, {
-            status: 200
-        })
-    } catch (error) {
-        console.error("Fetch All Posts Error:", error)
-        return Response.json({
-            success: false,
-            message: "Internal Server Error"
-        }, { status: 500 })
+    if (search) {
+      query.$text = { $search: search }
     }
+
+    if (mine) {
+      const session = await getServerSession(authOptions)
+      if (!session?.user?._id) {
+        return Response.json(
+          { success: false, message: "Not Authenticated" },
+          { status: 401 }
+        )
+      }
+      query.createdBy = session.user._id
+    }
+
+    if (username) {
+      const user = await UserModel.findOne({ username }).lean()
+      if (!user) {
+        return Response.json({
+          success: true,
+          message: "Posts fetched successfully",
+          data: []
+        })
+      }
+      query.createdBy = user._id
+    }
+
+    const sort: Record<string, SortOrder | { $meta: "textScore" }> = search
+  ? { score: { $meta: "textScore" } }
+  : { createdAt: -1 }
+
+    const projection = search
+      ? { score: { $meta: "textScore" } }
+      : {}
+
+    const posts = await PostModel.find(query, projection)
+      .populate("createdBy", "_id username imageUrl")
+      .sort(sort)
+      .lean()
+
+    return Response.json({
+      success: true,
+      message: "Posts fetched successfully",
+      data: posts
+    })
+  } catch (error) {
+    console.error("Fetch Posts Error:", error)
+    return Response.json(
+      { success: false, message: "Internal Server Error" },
+      { status: 500 }
+    )
+  }
 }
+
 

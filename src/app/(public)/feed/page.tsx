@@ -5,12 +5,16 @@ import { useSidebar } from "@/components/ui/sidebar"
 import PostCard, { Post } from "@/components/post/PostCard"
 import axios, { AxiosError } from "axios"
 import { ApiResponse } from "@/types/ApiResponse"
+import { useSearchParams } from "next/navigation"
 
 
 export default function page() {
   const { setOpen } = useSidebar()
   const [posts, setPosts] = useState<Post[] | null>(null)
   const [loading, setLoading] = useState(true)
+
+  const searchParams = useSearchParams()
+  const search = searchParams.get("search") || ""
 
   useEffect(() => {
     setOpen(true)
@@ -21,16 +25,13 @@ export default function page() {
     const fetchPosts = async () => {
       try {
         setLoading(true)
-        const res = await axios.get('/api/posts')
+        const url = search ? `/api/posts?search=${encodeURIComponent(search)}` : '/api/posts'
+        const res = await axios.get(url)
         if (!mounted) return
-        if (res.status === 200) {
-          setPosts(Array.isArray(res.data.data) ? res.data.data : [])
-        } else {
-          setPosts([])
-        }
+        if (res.status === 200) setPosts(Array.isArray(res.data.data) ? res.data.data : [])
+        else setPosts([])
       } catch (error) {
-        const axiosError = error as AxiosError<ApiResponse>
-        console.error("Error fetching posts:", axiosError)
+        console.error("Error fetching posts:", error)
         setPosts([])
       } finally {
         if (mounted) setLoading(false)
@@ -39,7 +40,7 @@ export default function page() {
 
     fetchPosts()
     return () => { mounted = false }
-  }, [])
+  }, [search])
 
   return (
     <main className="min-h-screen bg-[#EFE9D5] py-6">

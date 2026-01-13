@@ -76,7 +76,7 @@ export default function SignUpForm() {
     return (
         <div className="min-h-screen flex flex-col items-center justify-start bg-[#EFE9D5] py-8">
             <header className="text-center mb-8">
-                <h1 className="text-4xl md:text-5xl font-extrabold text-[#0f2430]">Welcome to ReviewMe</h1>
+                <h1 className="text-4xl md:text-5xl sm:text-4xl font-extrabold text-[#0f2430]">Welcome to ReviewMe</h1>
                 <p className="mt-4 text-md text-gray-500 font-semibold">To continue, fill out your personal info</p>
             </header>
 
@@ -161,7 +161,7 @@ export default function SignUpForm() {
                         <Button
                             aria-label="submit"
                             disabled={isSubmitting || isUsernameValid}
-                            className="w-md rounded-md bg-white hover:bg-gray-200 text-black font-semibold py-3 border border-black border-b-2 disabled:opacity-60 mt-3"
+                            className="w-full rounded-md bg-white hover:bg-gray-200 sm:w-auto text-black font-semibold py-3 border border-black border-b-2 disabled:opacity-60 mt-3"
                         >
                             {isSubmitting ? "Signing Up..." : "Sign Up"}
                         </Button>

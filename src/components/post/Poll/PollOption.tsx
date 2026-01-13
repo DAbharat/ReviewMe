@@ -60,7 +60,7 @@ export default function PollOption({
   useEffect(() => {
     fetchPoll()
 
-    
+
   }, [fetchPoll])
 
   const handleVote = async (optionLabel: string) => {
@@ -79,10 +79,10 @@ export default function PollOption({
     try {
       await axios.post(`/api/posts/${postId}/vote`, { option: optionLabel })
       toast.success(`You voted "${optionLabel}"`)
-          setHasVoted(true)
-await fetchPoll()
+      setHasVoted(true)
+      await fetchPoll()
     } catch (error) {
-      toast.error('Vote failed, try after sometime')
+      toast.error('Error submitting vote')
       setHasVoted(false)
       setSelectedOption(null)
       fetchPoll()
@@ -101,44 +101,44 @@ await fetchPoll()
       </h3>
 
       <RadioGroup
-  value={selectedOption ?? undefined}
-  onValueChange={handleVote}
- 
->
+        value={selectedOption ?? undefined}
+        onValueChange={handleVote}
 
-  <div className="space-y-3">
-    {pollResults.map((opt) => (
-      <div key={opt.label} className="flex items-center gap-3">
-        <div className="flex-1">
-          <div className="relative h-9 rounded-md bg-gray-100 border border-black overflow-hidden">
-            <div
-              className="absolute left-0 top-0 h-full bg-linear-to-r bg-gray-300 opacity-80"
-              style={{ width: `${percent(opt.votes)}%` }}
-            />
+      >
 
-            <div className="relative z-10 flex items-center px-3 h-full gap-2">
-              <RadioGroupItem
-                value={opt.label}
-                id={opt.label}
-                disabled={hasVoted || isVoting}
-              />
-              <Label
-                htmlFor={opt.label}
-                className="text-sm font-medium text-gray-800 cursor-pointer"
-              >
-                {opt.label}
-              </Label>
+        <div className="space-y-3">
+          {pollResults.map((opt) => (
+            <div key={opt.label} className="flex items-center gap-3">
+              <div className="flex-1">
+                <div className="relative h-9 rounded-md bg-gray-100 border border-black overflow-hidden">
+                  <div
+                    className="absolute left-0 top-0 h-full bg-linear-to-r bg-gray-300 opacity-80"
+                    style={{ width: `${percent(opt.votes)}%` }}
+                  />
+
+                  <div className="relative z-10 flex items-center px-3 h-full gap-2">
+                    <RadioGroupItem
+                      value={opt.label}
+                      id={opt.label}
+                      disabled={hasVoted || isVoting}
+                    />
+                    <Label
+                      htmlFor={opt.label}
+                      className="text-sm font-medium text-gray-800 cursor-pointer"
+                    >
+                      {opt.label}
+                    </Label>
+                  </div>
+                </div>
+              </div>
+
+              <div className="w-12 text-right text-sm font-medium text-gray-600">
+                {percent(opt.votes)}%
+              </div>
             </div>
-          </div>
+          ))}
         </div>
-
-        <div className="w-12 text-right text-sm font-medium text-gray-600">
-          {percent(opt.votes)}%
-        </div>
-      </div>
-    ))}
-  </div>
-</RadioGroup>
+      </RadioGroup>
 
 
       <div className="mt-1 text-sm text-gray-500">

@@ -2,11 +2,11 @@
 import React from 'react'
 import Link from 'next/link'
 import { useSession, signOut } from 'next-auth/react'
-
 import { Button } from '../ui/button'
 import { SidebarTrigger } from '../ui/sidebar'
-import router, { useRouter } from "next/navigation"
+import { useRouter } from "next/navigation"
 import { User } from 'lucide-react'
+import SearchBar from '../search/search'
 
 
 export default function Navbar() {
@@ -27,6 +27,8 @@ export default function Navbar() {
                             <span className="font-bold text-xl text-[#0f2430] tracking-tight">ReviewMe</span>
                         </Link>
                     </div>
+
+                    <SearchBar />
 
                     <div className="flex items-center gap-4">
                         {session ? (

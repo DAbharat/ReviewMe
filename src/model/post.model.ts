@@ -3,20 +3,20 @@ import mongoose, { Document, Schema, Model, Types } from 'mongoose';
 export type PollOptionLabel = "Worth it" | "Not Worth it" | "Maybe";
 
 export interface PollOption {
-  label: PollOptionLabel;
-  votes: number;
+    label: PollOptionLabel;
+    votes: number;
 }
 
 export interface Post extends Document {
-    title : string,
-    description : string,
-    imageUrl : string,
+    title: string,
+    description: string,
+    imageUrl: string,
     imagePublicId: string,
-    categories : string[],
-    poll : PollOption[],
+    categories: string[],
+    poll: PollOption[],
     commentCount: number,
     createdBy: Types.ObjectId,
-    createdAt : Date
+    createdAt: Date
 }
 
 const PollOptionSchema: Schema<PollOption> = new Schema({
@@ -51,7 +51,7 @@ const PostSchema: Schema<Post> = new Schema({
     categories: {
         type: [String],
         enum: [
-            "Product", "Series", "Movie", "App", "Game", "Sport","Technology","Celebrity","Other"
+            "Product", "Series", "Movie", "App", "Game", "Sport", "Technology", "Celebrity", "Other"
         ],
         default: ["Other"],
         index: true
@@ -85,6 +85,16 @@ const PostSchema: Schema<Post> = new Schema({
         type: Date,
         required: true,
         default: Date.now
+    }
+})
+
+PostSchema.index({
+    title: "text",
+    description: "text"
+}, {
+    weights: {
+        title: 5,
+        description: 1
     }
 })
 

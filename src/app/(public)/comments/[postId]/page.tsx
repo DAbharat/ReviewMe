@@ -6,6 +6,9 @@ import CommentPage from '@/components/comments/CommentPage'
 import { useParams } from 'next/navigation'
 import CommentForm from '@/components/comments/CommentForm'
 import useComments from '@/components/comments/useComments'
+import { useSession } from 'next-auth/react'
+import { toast } from 'sonner'
+
 
 export default function Page() {
   const [content, setContent] = useState('')
@@ -24,6 +27,8 @@ export default function Page() {
     deleteComment,
   } = useComments(postId!)
 
+  const {data: session} = useSession()
+  // console.log(postId)
   useEffect(() => {
     let mounted = true
 
@@ -63,12 +68,16 @@ export default function Page() {
             <div className="py-24 text-center text-slate-400">Loading post…</div>
           ) : post ? (
             <div className="space-y-6">
-              <PostCard post={post} />
+              <PostCard key={postId} post={post!} />
 
               <CommentForm
                 value={content}
                 onChange={setContent}
                 onSubmit={async () => {
+                  if(!session) {
+                    toast.error("You must be signed in to comment.")
+                    return
+                  }
                   await createComment(content)
                   setContent("")
                 }}

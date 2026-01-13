@@ -12,17 +12,17 @@ import { z } from "zod";
 export async function GET(request: Request) {
     await dbConnect()
 
-    const session = await getServerSession(authOptions)
-    const user: User = session?.user
+    // const session = await getServerSession(authOptions)
+    // const user: User = session?.user
 
-    if (!session || !user) {
-        return Response.json({
-            success: false,
-            message: "Not Authenticated"
-        }, {
-            status: 401
-        })
-    }
+    // if (!session || !user) {
+    //     return Response.json({
+    //         success: false,
+    //         message: "Not Authenticated"
+    //     }, {
+    //         status: 401
+    //     })
+    // }
 
     const url = new URL(request.url)
         const parts = url.pathname.split('/').filter(Boolean)
