@@ -161,7 +161,7 @@ export default function SignUpForm() {
                         <Button
                             aria-label="submit"
                             disabled={isSubmitting || isUsernameValid}
-                            className="w-full rounded-md bg-white hover:bg-gray-200 sm:w-auto text-black font-semibold py-3 border border-black border-b-2 disabled:opacity-60 mt-3"
+                            className="w-full rounded-md bg-white md:w-full hover:bg-gray-200 sm:w-auto text-black font-semibold py-3 border border-black border-b-2 disabled:opacity-60 mt-3"
                         >
                             {isSubmitting ? "Signing Up..." : "Sign Up"}
                         </Button>
