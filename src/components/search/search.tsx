@@ -5,7 +5,7 @@ import { Search } from "lucide-react"
 import { useDebounceValue } from 'usehooks-ts'
 import { useRouter } from 'next/navigation'
 
-export default function SearchBar() {
+export default function SearchBar({ autoFocus = false }: { autoFocus?: boolean }) {
   const [text, setText] = useState("")
   const router = useRouter()
 
@@ -17,8 +17,9 @@ export default function SearchBar() {
 
   return (
     <div>
-      <InputGroup className='border border-black border-b-2 w-full md:w-100 flex items-center'>
+      <InputGroup className='border border-black border-b-2 w-full md:w-100'>
         <InputGroupInput
+        autoFocus={autoFocus}
         className=' placeholder:text-gray-400 font-semibold'
           value={text}
           onChange={(e) => setText((e.target as HTMLInputElement).value)}

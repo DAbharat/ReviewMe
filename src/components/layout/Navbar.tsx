@@ -1,5 +1,5 @@
 "use client"
-import React from 'react'
+import React, { useState } from 'react'
 import Link from 'next/link'
 import { useSession, signOut } from 'next-auth/react'
 import { Button } from '../ui/button'
@@ -7,13 +7,16 @@ import { SidebarTrigger } from '../ui/sidebar'
 import { useRouter } from "next/navigation"
 import { User } from 'lucide-react'
 import SearchBar from '../search/search'
+import { Search } from 'lucide-react'
 
 
 export default function Navbar() {
 
     const { data: session } = useSession()
-    const user = session?.user 
+    const user = session?.user
     const router = useRouter()
+
+    const [mobileSearchOpen, setMobileSearchOpen] = useState(false)
 
     return (
         <nav className="fixed top-0 left-0 right-0 z-50 bg-[#EFE9D5] border-b-2 border-black/20 shadow-sm">
@@ -28,7 +31,20 @@ export default function Navbar() {
                         </Link>
                     </div>
 
-                    <SearchBar />
+                    <div className="hidden md:flex flex-1 mx-66">
+                        <SearchBar />
+                    </div>
+
+                    <div className="md:hidden pb-1 pt-1 ">
+                        <Button
+                            variant="outline"
+                            size="default"
+                            className="border border-black border-b-2 bg-[#ebdfbb]"
+                            onClick={() => setMobileSearchOpen(true)}
+                        >
+                            <Search className="h-6 w-6" />
+                        </Button>
+                    </div>
 
                     <div className="flex items-center gap-4">
                         {session ? (
@@ -62,9 +78,9 @@ export default function Navbar() {
                         ) : (
                             <div className="flex items-center gap-3">
                                 <Link href="/sign-in">
-                                    <Button 
-                                        variant="outline" 
-                                        size="sm" 
+                                    <Button
+                                        variant="outline"
+                                        size="sm"
                                         className="border border-black border-b-2 bg-[#ebdfbb] hover:bg-[#a79968] text-black transition-colors font-medium px-4 h-9"
                                     >
                                         Sign In
@@ -72,8 +88,8 @@ export default function Navbar() {
                                 </Link>
 
                                 <Link href="/sign-up">
-                                    <Button 
-                                        size="sm" 
+                                    <Button
+                                        size="sm"
                                         className="bg-[#ebdfbb] border border-black border-b-2 text-black hover:bg-[#a79968] transition-colors font-medium px-4 h-9"
                                     >
                                         Sign Up
@@ -84,6 +100,21 @@ export default function Navbar() {
                     </div>
                 </div>
             </div>
+            {mobileSearchOpen && (
+                <div className="fixed inset-0 z-50 bg-black/40 md:hidden">
+                    <div className="bg-[#EFE9D5] p-4 flex gap-2 items-center w-max border border-black">
+                        <SearchBar autoFocus />
+                        <Button
+                        className='ml-12 bg-[#EFE9D5] hover:bg-[#a79968] border border-black border-b-2'
+                            variant="outline"
+                            size="sm"
+                            onClick={() => setMobileSearchOpen(false)}
+                        >
+                            Cancel
+                        </Button>
+                    </div>
+                </div>
+            )}
         </nav>
     )
 }
