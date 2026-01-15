@@ -34,6 +34,7 @@ export function AppSidebar() {
   const [open, setOpen] = useState(false)
 
   const { data: session } = useSession()
+  const user = session?.user
 
   const items = [
   { title: "Home", url: "/feed", icon: Home },
@@ -136,7 +137,7 @@ const helpActions = [
                 <DropdownMenuTrigger asChild>
                   <SidebarMenuButton className="w-full flex items-center gap-3 sm:gap-6 cursor-pointer rounded-md bg-[#e9ddb3] hover:bg-[#a79968] border border-amber-900 px-3 py-2 text-black">
                     <User />
-                    <span className="flex-1 text-left font-semibold">{session?.user?.username || "User"}</span>
+                    <span className="flex-1 text-left font-semibold">{user?.username ?? user?.name ?? "User"}</span>
                     <ChevronUp className="ml-2" />
                   </SidebarMenuButton>
                 </DropdownMenuTrigger>
