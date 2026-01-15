@@ -4,7 +4,8 @@ import mongoose, { Document, Schema, Model, Types } from 'mongoose';
 export interface User extends Document {
     username : string,
     email : string,
-    password : string,
+    password?: string,
+    isOAuth : boolean,
     createdAt : Date
 }
 
@@ -24,8 +25,14 @@ const userSchema: Schema<User> = new Schema({
     },
     password: {
         type: String,
-        required: true,
+        required: function(this: User): boolean {
+            return !this.isOAuth;
+        },
         minlength: 8
+    },
+    isOAuth : {
+        type: Boolean,
+        default: false
     },
     createdAt: {
         type: Date,

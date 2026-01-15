@@ -10,6 +10,17 @@ export async function POST(request: Request) {
     try {
         const { username, email, password } = await request.json()
 
+        if(!username || !email || !password) {
+            const error: ApiResponse = { 
+                success: false, 
+                message: "Username, email, and password are required.", 
+                data: null 
+            }
+            return Response.json(error, { 
+                status: 400 
+            })
+        }
+
         const existingUserVerifiedUsingUsername = await UserModel.findOne({ username })
 
         if (existingUserVerifiedUsingUsername) {
@@ -31,6 +42,7 @@ export async function POST(request: Request) {
             username,
             email,
             password: hashedPassword,
+            isOAuth: false,
             createdAt: new Date()
         })
         await newUser.save()
