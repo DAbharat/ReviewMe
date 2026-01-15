@@ -13,7 +13,7 @@ import {
   InputGroupText,
   InputGroupTextarea,
 } from "@/components/ui/input-group"
-import { ArrowUpIcon, Search } from 'lucide-react'
+import { ArrowUpIcon, CircleFadingArrowUpIcon, Search } from 'lucide-react'
 import { Tooltip, TooltipTrigger, TooltipContent } from '@/components/ui/tooltip'
 import { IconCheck, IconInfoCircle, IconPlus } from "@tabler/icons-react"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger, DropdownMenuCheckboxItem, DropdownMenuSeparator } from '@/components/ui/dropdown-menu'
@@ -218,7 +218,7 @@ export default function Page() {
                   >
                     <label className="flex items-center cursor-pointer">
                       <input type="file" accept="image/*" onChange={handleFileChange} className="hidden" />
-                      <IconPlus />
+                      <CircleFadingArrowUpIcon />
                     </label>
                   </InputGroupButton>
                   <DropdownMenu>

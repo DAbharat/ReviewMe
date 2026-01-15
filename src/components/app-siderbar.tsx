@@ -38,7 +38,7 @@ export function AppSidebar() {
   const items = [
   { title: "Home", url: "/feed", icon: Home },
   { title: "User", url: `/profile/${session?.user?.username || (session?.user as any)?._id}`, icon: User },
-  { title: "Settings", url: "#", icon: Settings },
+  { title: "Settings", url: "/profile/settings", icon: Settings },
 ]
 
 const helpActions = [

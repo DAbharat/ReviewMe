@@ -53,6 +53,14 @@ export async function proxy(request: NextRequest) {
     return NextResponse.redirect(new URL("/sign-in", request.url))
   }
 
+  if( !token && url.pathname.startsWith("/profile") ) {
+    return NextResponse.redirect(new URL("/sign-in", request.url))
+  }
+
+  if( !token && url.pathname.startsWith("/settings") ) {
+    return NextResponse.redirect(new URL("/sign-in", request.url))
+  }
+
   return NextResponse.next()
 }
 
@@ -62,6 +70,8 @@ export const config = {
     "/sign-in",
     "/sign-up",
     "/",
-    "/feed"
+    "/feed",
+    "/settings/:path*",
+    "/profile/:path*"
   ]
 }
