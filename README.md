@@ -2,7 +2,7 @@
 
 > A lightweight social feed for product/media discussions — built with Next.js, Tailwind CSS and MongoDB.
 
-ProdFeed is a sample/full-stack application for sharing posts, commenting, voting on simple polls, and uploading images. It includes authentication, server-side API routes, and a responsive UI built with the Next.js App Router.
+ReviewMe is a sample/full-stack application for sharing posts, commenting, voting on simple polls, and uploading images. It includes authentication, server-side API routes, and a responsive UI built with the Next.js App Router.
 
 ## Key Features
 - Email/password authentication (NextAuth)
