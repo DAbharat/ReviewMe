@@ -1,7 +1,7 @@
 "use client"
 import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
-import { useForm, Resolver, Controller } from "react-hook-form"
+import { useForm, Controller } from "react-hook-form"
 import Link from "next/link"
 import { useDebounceValue } from "usehooks-ts"
 import { toast } from "sonner"
@@ -16,171 +16,161 @@ import { Spinner } from "../ui/spinner"
 import { Button } from "../ui/button"
 import { HoverCard, HoverCardTrigger } from "../ui/hover-card"
 
-
 export default function SignUpForm() {
+  const router = useRouter()
+  const [usernameMessage, setUsernameMessage] = useState("")
+  const [isUsernameValid, setIsUsernameValid] = useState(false)
+  const [isSubmitting, setIsSubmitting] = useState(false)
 
-    const router = useRouter()
-
-    const [usernameMessage, setUsernameMessage] = useState("")
-    const [isUsernameValid, setIsUsernameValid] = useState(false)
-    const [isSubmitting, setIsSubmitting] = useState(false)
-
-    const form = useForm<z.infer<typeof signupSchema>>({
-        resolver: zodResolver(signupSchema),
-        defaultValues: {
-            username: "",
-            email: "",
-            password: ""
-        }
-    })
-
-
-    const username = form.watch("username")
-    const [debouncedUsername] = useDebounceValue(username ?? "", 500)
-
-
-    useEffect(() => {
-        const checkUniqueUsername = async () => {
-            if (debouncedUsername) {
-                setIsUsernameValid(true)
-                setUsernameMessage("")
-                try {
-                    const response = await axios.get<ApiResponse>(`/api/check-username-unique?username=${debouncedUsername}`)
-                    setUsernameMessage(response.data.message)
-                } catch (error) {
-                    const axiosError = error as AxiosError<ApiResponse>;
-                    setUsernameMessage(axiosError.response?.data.message ?? "Error checking username")
-                } finally {
-                    setIsUsernameValid(false)
-                }
-            }
-        }
-        checkUniqueUsername()
-    }, [debouncedUsername])
-
-    const onSubmit = async (data: z.infer<typeof signupSchema>) => {
-        setIsSubmitting(true)
-        try {
-            const response = await axios.post<ApiResponse>(`/api/sign-up`, data)
-            toast.success(response.data.message)
-            router.push("/sign-in")
-        } catch (error) {
-            console.error("Sign up error:", error)
-            const axiosError = error as AxiosError<ApiResponse>;
-            toast.error(axiosError.response?.data.message || "Sign up failed")
-        } finally {
-            setIsSubmitting(false)
-        }
+  const form = useForm<z.infer<typeof signupSchema>>({
+    resolver: zodResolver(signupSchema),
+    defaultValues: {
+      username: "",
+      email: "",
+      password: ""
     }
+  })
 
-    return (
-        <div className="min-h-screen flex flex-col items-center justify-start bg-[#EFE9D5] py-8">
-            <header className="text-center mb-8">
-                <h1 className="text-4xl md:text-5xl sm:text-4xl font-extrabold text-[#0f2430]">Welcome to ReviewMe</h1>
-                <p className="mt-4 text-md text-gray-500 font-semibold">To continue, fill out your personal info</p>
-            </header>
+  const username = form.watch("username")
+  const [debouncedUsername] = useDebounceValue(username ?? "", 500)
 
-            <div className="w-full max-w-lg bg-white border border-black border-b-2 rounded-2xl shadow-md p-6">
-                <h2 className="text-3xl font-bold text-[#0f2430] mb-4 text-center">Create your account</h2>
-                <p className="text-center text-sm text-gray-500 mb-6">Choose a username and enter your email and password.</p>
-                <form onSubmit={form.handleSubmit(onSubmit)}>
-                    <FieldGroup>
+  useEffect(() => {
+    const checkUniqueUsername = async () => {
+      if (debouncedUsername) {
+        setIsUsernameValid(true)
+        setUsernameMessage("")
+        try {
+          const response = await axios.get<ApiResponse>(`/api/check-username-unique?username=${debouncedUsername}`)
+          setUsernameMessage(response.data.message)
+        } catch (error) {
+          const axiosError = error as AxiosError<ApiResponse>
+          setUsernameMessage(axiosError.response?.data.message ?? "Error checking username")
+        } finally {
+          setIsUsernameValid(false)
+        }
+      }
+    }
+    checkUniqueUsername()
+  }, [debouncedUsername])
 
-                        <Controller
-                            control={form.control}
-                            name="username"
-                            render={({ field, fieldState }) => (
-                                <Field data-invalid={fieldState.invalid}>
-                                    <FieldLabel htmlFor={field.name} className="sr-only">Username</FieldLabel>
-                                    <FieldContent>
-                                        <Input
-                                            id={field.name}
-                                            {...field}
-                                            aria-invalid={fieldState.invalid}
-                                            placeholder="Username" 
-                                            className="border border-black border-b-2 placeholder:text-gray-400 font-semibold"
-                                            />
-                                        {isUsernameValid && <Spinner />}
-                                        <p className={`text-sm ml-1.5 ${usernameMessage === "Username is available" ? "text-green-600" : "text-red-600"}`}>{usernameMessage}</p>
-                                        {/* {!isUsernameValid && usernameMessage && (
-                                            <div className="ml-1 text-sm text-[#7b0b0b]">
-                                                {usernameMessage}
-                                            </div>
-                                        )} */}
-                                        {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
-                                    </FieldContent>
-                                </Field>
-                            )}
-                        />
+  const onSubmit = async (data: z.infer<typeof signupSchema>) => {
+    setIsSubmitting(true)
+    try {
+      const response = await axios.post<ApiResponse>(`/api/sign-up`, data)
+      toast.success(response.data.message)
+      router.push("/sign-in")
+    } catch (error) {
+      console.error("Sign up error:", error)
+      const axiosError = error as AxiosError<ApiResponse>
+      toast.error(axiosError.response?.data.message || "Sign up failed")
+    } finally {
+      setIsSubmitting(false)
+    }
+  }
 
-                        <Controller
-                            control={form.control}
-                            name="email"
-                            render={({ field, fieldState }) => (
-                                <Field data-invalid={fieldState.invalid}>
-                                    <FieldLabel htmlFor={field.name} className="sr-only">Email</FieldLabel>
-                                    <FieldContent>
-                                        <Input
-                                            id={field.name}
-                                            type="email"
-                                            {...field}
-                                            aria-invalid={fieldState.invalid} 
-                                            placeholder="Email"
-                                            className="border-black border-b-2 font-semibold rounded-md px-4 py-3 placeholder:text-gray-400"
-                                        />
-                                        {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
-                                    </FieldContent>
-                                </Field>
-                            )}
-                        />
+  return (
+    <div className="min-h-screen flex flex-col items-center justify-start bg-[#EFE9D5] px-4 py-8 sm:py-10">
+      <header className="text-center mb-6 sm:mb-8 w-full max-w-lg">
+        <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-[#0f2430]">Welcome to ReviewMe</h1>
+        <p className="mt-3 sm:mt-4 text-sm sm:text-md text-gray-500 font-semibold">To continue, fill out your personal info</p>
+      </header>
 
-                        <Controller
-                            control={form.control}
-                            name="password"
-                            render={({ field, fieldState }) => (
-                                <Field data-invalid={fieldState.invalid}>
-                                    <FieldLabel htmlFor={field.name} className="sr-only">Password</FieldLabel>
-                                    <FieldContent>
-                                        <Input
-                                            id={field.name}
-                                            type="password"
-                                            {...field}
-                                            aria-invalid={fieldState.invalid}
-                                            placeholder="Password"
-                                            className="border border-black border-b-2 font-semibold rounded-md px-4 py-3 placeholder:text-gray-400"
-                                        />
-                                        {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
-                                    </FieldContent>
-                                </Field>
-                            )}
-                        />
-                    </FieldGroup>
+      <div className="w-full max-w-lg bg-white border border-black border-b-2 rounded-2xl shadow-md p-4 sm:p-6">
+        <h2 className="text-2xl sm:text-3xl font-bold text-[#0f2430] mb-3 sm:mb-4 text-center">Create your account</h2>
+        <p className="text-center text-sm text-gray-500 mb-5 sm:mb-6">Choose a username and enter your email and password.</p>
 
-                    <div className="mt-3">
-                        <p className="text-sm text-black mb-3 opacity-40 ml-1">Password must be at least 6 characters.</p>
-                        <Button
-                            aria-label="submit"
-                            disabled={isSubmitting || isUsernameValid}
-                            className="w-full rounded-md bg-white md:w-full hover:bg-gray-200 sm:w-auto text-black font-semibold py-3 border border-black border-b-2 disabled:opacity-60 mt-3"
-                        >
-                            {isSubmitting ? "Signing Up..." : "Sign Up"}
-                        </Button>
-                    </div>
+        <form onSubmit={form.handleSubmit(onSubmit)}>
+          <FieldGroup>
+            <Controller
+              control={form.control}
+              name="username"
+              render={({ field, fieldState }) => (
+                <Field data-invalid={fieldState.invalid}>
+                  <FieldLabel htmlFor={field.name} className="sr-only">Username</FieldLabel>
+                  <FieldContent>
+                    <Input
+                      id={field.name}
+                      {...field}
+                      aria-invalid={fieldState.invalid}
+                      placeholder="Username"
+                      className="border border-black border-b-2 placeholder:text-gray-400 font-semibold"
+                    />
+                    {isUsernameValid && <Spinner />}
+                    <p className={`text-sm ml-1.5 ${usernameMessage === "Username is available" ? "text-green-600" : "text-red-600"}`}>
+                      {usernameMessage}
+                    </p>
+                    {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+                  </FieldContent>
+                </Field>
+              )}
+            />
 
-                    <div className="mt-6 text-center text-sm">
-                        <span className="text-gray-400 font-semibold ml-2">Already have an account? </span>
-                        <HoverCard>
-                            <HoverCardTrigger asChild>
-                                <Button variant="link" className="bg-white mr-2">
-    <Link href="/sign-in" className="text-black font-medium mr-2">Sign in</Link>
-</Button>
-                            </HoverCardTrigger>
+            <Controller
+              control={form.control}
+              name="email"
+              render={({ field, fieldState }) => (
+                <Field data-invalid={fieldState.invalid}>
+                  <FieldLabel htmlFor={field.name} className="sr-only">Email</FieldLabel>
+                  <FieldContent>
+                    <Input
+                      id={field.name}
+                      type="email"
+                      {...field}
+                      aria-invalid={fieldState.invalid}
+                      placeholder="Email"
+                      className="border-black border-b-2 font-semibold rounded-md px-4 py-3 placeholder:text-gray-400"
+                    />
+                    {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+                  </FieldContent>
+                </Field>
+              )}
+            />
 
-                        </HoverCard>
-                    </div>
-                </form>
-            </div>
-        </div>
-    )
+            <Controller
+              control={form.control}
+              name="password"
+              render={({ field, fieldState }) => (
+                <Field data-invalid={fieldState.invalid}>
+                  <FieldLabel htmlFor={field.name} className="sr-only">Password</FieldLabel>
+                  <FieldContent>
+                    <Input
+                      id={field.name}
+                      type="password"
+                      {...field}
+                      aria-invalid={fieldState.invalid}
+                      placeholder="Password"
+                      className="border border-black border-b-2 font-semibold rounded-md px-4 py-3 placeholder:text-gray-400"
+                    />
+                    {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+                  </FieldContent>
+                </Field>
+              )}
+            />
+          </FieldGroup>
+
+          <div className="mt-3">
+            <p className="text-sm text-black mb-2 opacity-40 ml-1">Password must be at least 6 characters.</p>
+            <Button
+              aria-label="submit"
+              disabled={isSubmitting || isUsernameValid}
+              className="w-full rounded-md bg-white hover:bg-gray-200 text-black font-semibold py-3 border border-black border-b-2 disabled:opacity-60 mt-2 sm:mt-3"
+            >
+              {isSubmitting ? "Signing Up..." : "Sign Up"}
+            </Button>
+          </div>
+
+          <div className="mt-5 sm:mt-6 text-center text-sm flex items-center justify-center flex-wrap gap-1">
+            <span className="text-gray-400 font-semibold">Already have an account?</span>
+            <HoverCard>
+              <HoverCardTrigger asChild>
+                <Button variant="link" className="bg-white p-0 h-auto">
+                  <Link href="/sign-in" className="text-black font-medium">Sign in</Link>
+                </Button>
+              </HoverCardTrigger>
+            </HoverCard>
+          </div>
+        </form>
+      </div>
+    </div>
+  )
 }
-

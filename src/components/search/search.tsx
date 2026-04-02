@@ -16,8 +16,8 @@ export default function SearchBar({ autoFocus = false }: { autoFocus?: boolean }
   }
 
   return (
-    <div>
-      <InputGroup className='border border-black border-b-2 w-full md:w-100'>
+    <div className="w-full">
+      <InputGroup className='border border-black border-b-2 w-full h-8 sm:h-9 flex items-center'>
         <InputGroupInput
         autoFocus={autoFocus}
         className=' placeholder:text-gray-400 font-semibold'

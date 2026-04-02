@@ -16,8 +16,6 @@ export default function Navbar() {
     const user = session?.user
     const router = useRouter()
 
-    const [mobileSearchOpen, setMobileSearchOpen] = useState(false)
-
     return (
         <nav className="fixed top-0 left-0 right-0 z-50 bg-[#EFE9D5] border-b-2 border-black/20 shadow-sm">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -26,24 +24,16 @@ export default function Navbar() {
                         <div className="mr-2 md:hidden">
                             <SidebarTrigger />
                         </div>
-                        <Link href="/" className="flex items-center">
-                            <span className="font-bold text-xl text-[#0f2430] tracking-tight">ReviewMe</span>
+                        <Link href="/" className="flex items-center gap-2 lg:gap-4">
+                            <span className="flex items-center justify-center w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-[#EFE9D5] border border-black font-bold text-sm sm:text-base text-[#0f2430]">RM</span>
+                            <span className="hidden md:block text-lg font-bold text-black tracking-tight whitespace-nowrap">
+                                Review<span className="font-bold">Me</span>
+                            </span>
                         </Link>
                     </div>
 
-                    <div className="hidden md:flex flex-1 mx-66">
+                    <div className="flex flex-1 mx-3 sm:mx-4 lg:max-w-xl">
                         <SearchBar />
-                    </div>
-
-                    <div className="md:hidden pb-1 pt-1 ">
-                        <Button
-                            variant="outline"
-                            size="default"
-                            className="border border-black border-b-2 bg-[#ebdfbb]"
-                            onClick={() => setMobileSearchOpen(true)}
-                        >
-                            <Search className="h-6 w-6" />
-                        </Button>
                     </div>
 
                     <div className="flex items-center gap-4">
@@ -76,45 +66,19 @@ export default function Navbar() {
                                 </Button>
                             </div>
                         ) : (
-                            <div className="flex items-center gap-3">
-                                <Link href="/sign-in">
-                                    <Button
-                                        variant="outline"
-                                        size="sm"
-                                        className="border border-black border-b-2 bg-[#ebdfbb] hover:bg-[#a79968] text-black transition-colors font-medium px-4 h-9"
-                                    >
-                                        Sign In
-                                    </Button>
-                                </Link>
-
-                                <Link href="/sign-up">
-                                    <Button
-                                        size="sm"
-                                        className="bg-[#ebdfbb] border border-black border-b-2 text-black hover:bg-[#a79968] transition-colors font-medium px-4 h-9"
-                                    >
-                                        Sign Up
-                                    </Button>
-                                </Link>
-                            </div>
+                            <Link href="/sign-in">
+                                <Button
+                                    variant="outline"
+                                    size="sm"
+                                    className="border border-black border-b-2 bg-[#ebdfbb] hover:bg-[#a79968] text-black transition-colors font-medium text-xs sm:text-sm px-2 h-8 sm:px-4 sm:h-9"
+                                >
+                                    Sign In
+                                </Button>
+                            </Link>
                         )}
                     </div>
                 </div>
             </div>
-            {mobileSearchOpen && (
-                <div className="fixed inset-0 z-50 bg-black/40 md:hidden">
-                    <div className="bg-[#EFE9D5] p-4 flex gap-2 items-center w-max border border-black">
-                        <SearchBar autoFocus />
-                        <Button
-                        className='ml-12 bg-[#EFE9D5] hover:bg-[#a79968] border border-black border-b-2'
-                            variant="outline"
-                            size="sm"
-                            onClick={() => setMobileSearchOpen(false)}
-                        >
-                            Cancel
-                        </Button>
-                    </div>
-                </div>
-            )}
         </nav>
     )
 }

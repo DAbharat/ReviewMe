@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import { Inter } from "next/font/google";
 import "./globals.css";
 import AuthProvider from "@/context/AuthProvider";
 import { Toaster } from "../components/ui/sonner";
@@ -7,6 +8,11 @@ import Navbar from "@/components/layout/Navbar";
 import { SidebarProvider, SidebarTrigger, SidebarInset } from "@/components/ui/sidebar";
 import SidebarWrapper from "@/components/sidebar-wrapper";
 //import { AppSiderbar } from "@/components/app-sidebar";
+
+const inter = Inter({
+  variable: "--font-inter",
+  subsets: ["latin"],
+})
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -32,7 +38,7 @@ export default function RootLayout({
     <html lang="en">
 
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${inter.className} antialiased`}
         style={{ ["--navbar-height"]: "3rem" } as React.CSSProperties}
       >
         <AuthProvider>

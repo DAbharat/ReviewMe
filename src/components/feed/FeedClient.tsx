@@ -46,8 +46,8 @@ export default function FeedClient() {
 
   return (
     <main className="min-h-screen bg-[#EFE9D5] py-6">
-      <div className="mx-auto w-full bg-[#EFE9D5] ml-10 max-w-375 px-6 grid grid-cols-1 lg:grid-cols-[1fr_220px] gap-6">
-        <section className="w-full">
+      <div className="mx-auto w-full max-w-6xl px-4 sm:px-6 lg:px-8 grid grid-cols-1 lg:grid-cols-[1fr_220px] gap-6">
+        <section className="w-full min-w-0">
           {loading ? (
             <div className="py-24 text-center text-slate-400">Loading feed…</div>
           ) : posts && posts.length > 0 ? (

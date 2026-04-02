@@ -5,11 +5,10 @@ import { useSession } from 'next-auth/react'
 import axios, { AxiosError } from 'axios'
 import { ApiResponse } from '@/types/ApiResponse'
 import { useRouter } from 'next/navigation'
-import { MoreHorizontal, MessageCircle, Flag, Trash, PencilLine, Dot } from 'lucide-react'
+import { MoreHorizontal, MessageCircle, Flag, Trash, PencilLine } from 'lucide-react'
 import { Button } from '../ui/button'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator } from '../ui/dropdown-menu'
-import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "../ui/alert-dialog"
-import CommentForm from '../comments/CommentForm'
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "../ui/alert-dialog"
 import PollOption from './Poll/PollOption'
 
 export type Post = {
@@ -36,23 +35,16 @@ export default function PostCard({ post }: { post?: Post }) {
   const [localCommentCount, setLocalCommentCount] = useState<number>(post?.commentCount ?? 0)
 
   const isOwner = Boolean(
-  session?.user?._id &&
-  post?.createdBy?._id &&
-  String(session.user._id) === String(post.createdBy._id)
-)
-
+    session?.user?._id &&
+    post?.createdBy?._id &&
+    String(session.user._id) === String(post.createdBy._id)
+  )
 
   const handleDeleteClick = async (postId: string) => {
-    if (!session) {
+    if (!session || !isOwner) {
       toast.error("You must be signed in to delete a post.")
       return
     }
-
-    if (!isOwner) {
-      toast.error("You must be signed in to delete a post.")
-      return
-    }
-
     setDeletePostId(postId)
     setMenuOpen(false)
     setOpen(true)
@@ -63,10 +55,9 @@ export default function PostCard({ post }: { post?: Post }) {
       toast.error("Invalid post ID.")
       return
     }
-
     try {
       setIsLoading(true)
-      const result = await axios.delete<ApiResponse>(`/api/posts/${deletePostId}`)
+      await axios.delete<ApiResponse>(`/api/posts/${deletePostId}`)
       toast.success("Post deleted successfully.")
       setOpen(false)
       setDeletePostId(null)
@@ -80,19 +71,13 @@ export default function PostCard({ post }: { post?: Post }) {
   }
 
   const updatePost = async (postId: string) => {
-    if (!session) {
-      toast.error("You must be signed in to update a post.")
-      return
-    }
-
-    if (!isOwner) {
+    if (!session || !isOwner) {
       toast.error("You are not authorized to update this post.")
       return
     }
-
     try {
       setIsLoading(true)
-      const result = await axios.put<ApiResponse>(`/api/posts/${postId}`)
+      await axios.put<ApiResponse>(`/api/posts/${postId}`)
       toast.success("Post updated successfully.")
       router.refresh()
     } catch (error) {
@@ -105,18 +90,14 @@ export default function PostCard({ post }: { post?: Post }) {
 
   const handleCreateComment = async () => {
     if (!session) { toast.error('You must be signed in to comment.'); return; }
-    if (!post?._id) {
-      toast.error('Invalid post ID.');
-      return;
-    }
-
+    if (!post?._id) { toast.error('Invalid post ID.'); return; }
     try {
       setIsLoading(true);
-      const result = await axios.post<ApiResponse>(`/api/posts/${post._id}/comments`, { content: commentContent });
+      await axios.post<ApiResponse>(`/api/posts/${post._id}/comments`, { content: commentContent });
       setCommentContent('');
       toast.success('Comment posted.');
       setLocalCommentCount((c) => c + 1)
-      router.refresh(); 
+      router.refresh();
     } catch (err) {
       const axiosError = err as AxiosError<ApiResponse>;
       toast.error(axiosError.response?.data.message || 'Failed to post comment.');
@@ -126,28 +107,32 @@ export default function PostCard({ post }: { post?: Post }) {
   }
 
   return (
-    <article className="bg-[#e8e0c3] border border-black border-b-2 mt-4 rounded-2xl p-4 shadow-sm hover:shadow-md transition-shadow duration-300">
+    <article className="bg-[#e8e0c3] border border-black border-b-2 mt-4 rounded-2xl p-2.5 sm:p-4 shadow-sm hover:shadow-md transition-shadow duration-300 w-full min-w-0 lg:max-w-2xl lg:mx-auto">
       {/* Header */}
-      <header className="flex items-start gap-3">
-        <div className="w-6 h-6 mt-1.5 rounded-full bg-black flex items-center justify-center text-white text-sm font-semibold shadow-sm shrink-0">
+      <header className="flex items-start gap-2 sm:gap-3">
+        <div className="w-5 h-5 sm:w-6 sm:h-6 mt-1.5 rounded-full bg-black flex items-center justify-center text-white text-xs sm:text-sm font-semibold shadow-sm shrink-0">
           {post?.createdBy?.username?.charAt(0).toUpperCase() ?? 'U'}
         </div>
-        
+
         <div className="flex-1 min-w-0">
           <div className="flex items-center justify-between gap-2">
             <h3 className="text-sm font-semibold text-gray-900 truncate">
               {post?.createdBy?.username || 'Unknown User'}
             </h3>
-            
+
             <DropdownMenu open={menuOpen} onOpenChange={setMenuOpen}>
               <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="icon" aria-label="More Options"
-                  className="h-8 w-8 rounded-full hover:bg-[#a79968] text-gray-500 shrink-0">
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  aria-label="More Options"
+                  className="h-7 w-7 sm:h-8 sm:w-8 rounded-full hover:bg-[#a79968] text-gray-500 shrink-0"
+                >
                   <MoreHorizontal className="w-4 h-4" />
                 </Button>
               </DropdownMenuTrigger>
 
-              <DropdownMenuContent align="end" className="w-48 bg-[#EFE9D5] border border-amber-900">
+              <DropdownMenuContent align="end" className="w-44 sm:w-48 bg-[#EFE9D5] border border-amber-900">
                 {isOwner ? (
                   <>
                     <DropdownMenuItem
@@ -155,7 +140,7 @@ export default function PostCard({ post }: { post?: Post }) {
                       disabled={isLoading || !post?._id}
                       className="flex items-center gap-2 font-bold cursor-pointer"
                     >
-                      <PencilLine className="w-4 h-4" />
+                      <PencilLine className="w-4 h-4 shrink-0" />
                       <span>Update Post</span>
                     </DropdownMenuItem>
                     <DropdownMenuSeparator />
@@ -164,13 +149,13 @@ export default function PostCard({ post }: { post?: Post }) {
                       disabled={isLoading || !post?._id}
                       className="flex items-center gap-2 text-red-600 font-bold cursor-pointer"
                     >
-                      <Trash className="w-4 h-4" />
+                      <Trash className="w-4 h-4 shrink-0" />
                       <span>Delete Post</span>
                     </DropdownMenuItem>
                   </>
                 ) : (
-                  <DropdownMenuItem className="text-red-500 font-bold cursor-pointer">
-                    <Flag className="w-4 h-4" /> Report Post
+                  <DropdownMenuItem className="text-red-500 font-bold cursor-pointer flex items-center gap-2">
+                    <Flag className="w-4 h-4 shrink-0" /> Report Post
                   </DropdownMenuItem>
                 )}
               </DropdownMenuContent>
@@ -178,13 +163,13 @@ export default function PostCard({ post }: { post?: Post }) {
           </div>
 
           {post?.title && (
-            <h4 className="mt-2 text-base font-semibold text-gray-900 leading-snug">
+            <h4 className="mt-1 sm:mt-2 text-sm sm:text-base font-semibold text-gray-900 leading-snug wrap-break-word">
               {post.title}
             </h4>
           )}
-          
+
           {post?.description && (
-            <p className="mt-1.5 text-sm text-gray-600 leading-relaxed">
+            <p className="mt-1 sm:mt-1.5 text-sm text-gray-600 leading-relaxed wrap-break-word">
               {post.description}
             </p>
           )}
@@ -193,12 +178,12 @@ export default function PostCard({ post }: { post?: Post }) {
 
       {/* Media */}
       {post?.imageUrl && (
-        <div className="mt-3">
+        <div className="mt-2 sm:mt-3">
           <div className="rounded-xl overflow-hidden border border-black border-b-2">
             <img
               src={post.imageUrl}
               alt="post media"
-              className="w-full h-48 object-cover block"
+              className="w-full h-36 sm:h-48 lg:h-52 object-cover block"
               loading="lazy"
             />
           </div>
@@ -207,16 +192,16 @@ export default function PostCard({ post }: { post?: Post }) {
 
       {/* Poll Options */}
       {post?._id && (
-        <div className="mt-6">
-          <PollOption  key={post._id} postId={post._id} pollRefreshIntervalMs={15000} />
+        <div className="mt-3 sm:mt-6">
+          <PollOption key={post._id} postId={post._id} pollRefreshIntervalMs={15000} />
         </div>
       )}
 
       {/* Footer */}
-      <footer className="mt-3 flex items-center justify-between text-sm">
+      <footer className="mt-2 sm:mt-3 flex items-center justify-between gap-2 text-sm flex-wrap">
         <Button
           onClick={() => router.push(`/comments/${post?._id}`)}
-          className="flex items-center gap-1.5 text-black hover:bg-[#a79968]  transition-colors px-0 h-auto"
+          className="flex items-center gap-1.5 text-black hover:bg-[#a79968] transition-colors px-0 h-auto shrink-0"
           variant="ghost"
         >
           <MessageCircle className="w-4 h-4" />
@@ -224,28 +209,29 @@ export default function PostCard({ post }: { post?: Post }) {
         </Button>
 
         {post?.categories && post.categories.length > 0 && (
-          <p className="text-sm text-gray-600 font-semibold">
-            <span className="text-gray-400">Category:</span> {post.categories.join(', ')}
+          <p className="text-sm text-gray-600 font-semibold truncate min-w-0">
+            <span className="text-gray-400">Category:</span>{' '}
+            {post.categories.join(', ')}
           </p>
         )}
       </footer>
 
       <AlertDialog open={open} onOpenChange={setOpen}>
-        <AlertDialogContent className='bg-[#EFE9D5] border border-amber-900'>
+        <AlertDialogContent className="bg-[#EFE9D5] border border-amber-900 mx-4 sm:mx-auto max-w-sm sm:max-w-md w-full">
           <AlertDialogHeader>
-            <AlertDialogTitle className='font-bold'>Delete post?</AlertDialogTitle>
-            <AlertDialogDescription className='font-semibold '>
+            <AlertDialogTitle className="font-bold">Delete post?</AlertDialogTitle>
+            <AlertDialogDescription className="font-semibold">
               This action cannot be undone.
             </AlertDialogDescription>
           </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel className="border border-amber-900" disabled={isLoading}>
+          <AlertDialogFooter className="flex-col sm:flex-row gap-2 sm:gap-0">
+            <AlertDialogCancel className="border border-amber-900 w-full sm:w-auto" disabled={isLoading}>
               Cancel
             </AlertDialogCancel>
             <AlertDialogAction
               onClick={confirmDeletePost}
               disabled={isLoading}
-              className="bg-red-600 hover:bg-red-700"
+              className="bg-red-600 hover:bg-red-700 w-full sm:w-auto"
             >
               Delete
             </AlertDialogAction>
