@@ -48,7 +48,7 @@ export default function Navbar() {
                                         <Button
                                             variant="outline"
                                             size="sm"
-                                            className="border-2 border-black border-b-3 bg-[#EFE9D5] text-[#0f2430] hover:bg-[#a79968] transition-colors h-9 w-9 p-0"
+                                            className="hidden md:inline-flex border-2 border-black border-b-3 bg-[#EFE9D5] text-[#0f2430] hover:bg-[#a79968] transition-colors h-9 w-9 p-0"
                                             onClick={() => profileSlug && router.push(`/profile/${profileSlug}`)}
                                             aria-label="Open profile"
                                         >
